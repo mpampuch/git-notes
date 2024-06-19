@@ -3,13 +3,16 @@
 ## Resetting commits
 
 ![.](resetting/resetting-1.png)
+
 `--soft`: Removes the commit
 
 ![.](resetting/resetting-2.png)
 
+
 `--mixed`: Removes the commit and unstages files
 
 ![.](resetting/resetting-3.png)
+
 `--hard`: Removes the commit, unstages files, and discards the local changes
 
 ![.](resetting/resetting-4.png)
