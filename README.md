@@ -2,7 +2,8 @@
 
 ## NOTE:
 
-Practice git best practices by adding a `--outfile` parameter to `nf-whisper` that allows you to change the default file name of `transcription.txt` 
+Practice git best practices by adding a `--outfile` parameter to `nf-whisper` that allows you to change the default file name of `transcription.txt`
+- Can also add an option to try a smaller model on retry 
 
 ## Resetting commits
 
