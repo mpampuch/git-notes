@@ -7,27 +7,36 @@ Practice git best practices by adding a `--outfile` parameter to `nf-whisper` th
 
 ## Resetting commits
 
-![.](resetting/resetting-1.png)
+<p align="center">
+<img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
+</p>
+
 
 `--soft`: Removes the commit
 
-![.](resetting/resetting-2.png)
-
+<p align="center">
+<img src="resetting/resetting-2.png" alt="Resetting commits" style="width:70%;">
+</p>
 
 `--mixed`: Removes the commit and unstages files
 
-![.](resetting/resetting-3.png)
+<p align="center">
+<img src="resetting/resetting-3.png" alt="Resetting commits" style="width:70%;">
+</p>
 
 `--hard`: Removes the commit, unstages files, and discards the local changes
 
-![.](resetting/resetting-4.png)
-
+<p align="center">
+<img src="resetting/resetting-4.png" alt="Resetting commits" style="width:70%;">
+</p>
 
 ## Working on a forked repository
 
 1. Fork a remote repository for an open source project and clone it on your local machine 
 
-![.](forking/forking-1.png)
+<p align="center">
+<img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
 
 - This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
 
@@ -35,12 +44,15 @@ To fix this and keep the forked repository up to date:
 
 2. In the local repository you have a reference to the forked repositrory called `origin`. Add another reference to the original repository called `base`.
 
-![.](forking/forking-2.png)
-
+<p align="center">
+<img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
 
 3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
 
-![.](forking/forking-3.png)
+<p align="center">
+<img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
 
 ## Collaborative Workflow Best Practices
 
