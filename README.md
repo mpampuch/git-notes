@@ -1,5 +1,9 @@
 # git-notes
 
+## NOTE:
+
+Practice git best practices by adding a `--outfile` parameter to `nf-whisper` that allows you to change the default file name of `transcription.txt` 
+
 ## Resetting commits
 
 ![.](resetting/resetting-1.png)
