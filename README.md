@@ -38,6 +38,10 @@ Practice git best practices by adding a `--outfile` parameter to `nf-whisper` th
 <img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
 </p>
 
+```bash
+git clone https://github.com/your-username/forked_repo-name.git
+```
+
 - This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
 
 To fix this and keep the forked repository up to date:
@@ -48,11 +52,25 @@ To fix this and keep the forked repository up to date:
 <img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
 </p>
 
+```bash
+git remote add base https://github.com/original-owner/repo-name.git
+```
+
 3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
 
 <p align="center">
 <img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
 </p>
+
+```bash
+# Fetch the Latest Commits from the Original Repository:
+git fetch base
+# Merge the Changes into Your Local Main Branch:
+git checkout main
+git merge base/main
+# Push the Changes to Your Forked Repository:
+git push origin main
+```
 
 ## Collaborative Workflow Best Practices
 
