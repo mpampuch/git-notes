@@ -5,6 +5,106 @@
 Practice git best practices by adding a `--outfile` parameter to `nf-whisper` that allows you to change the default file name of `transcription.txt`
 - Can also add an option to try an chop up the videos on the retry
 
+## The .gitignore File
+
+A `.gitignore` file is used to keep a tidy and efficient repository. It tells Git which files or directories to ignore, ensuring that unnecessary clutter—like temporary files, logs, and build artifacts—doesn’t get committed. This not only keeps your repository clean but also improves collaboration by preventing irrelevant files from being shared among team members.
+
+
+A `.gitignore` file works by specifying patterns for files and directories that Git should ignore when tracking changes. 
+
+Step 1. **Creating the File** 
+- To use `.gitignore`, simply create a text file named `.gitignore` in the root of your repository. This file can contain a list of patterns for files and directories you want Git to ignore.
+
+Step 2. **Pattern Matching** 
+
+- Inside the `.gitignore` file, you can specify patterns using various rules: 
+  - **Basic patterns:**  Just the name of a file or directory (e.g., `temp/` ignores the `temp` directory).
+  
+  - **Wildcards:**  Use `*` to match any characters (e.g., `*.log` ignores all `.log` files).
+    - The double asterisk (`**`) in a `.gitignore` file is a powerful wildcard pattern that allows you to match files and directories at any level of the directory hierarchy. 
+      - Usage of `**` 
+        1. **Match Any Directory Depth** : 
+            - You can use `**` to match files or directories regardless of how deep they are nested. For example:
+
+              ```javascript
+              **/temp/
+              ```
+
+              This pattern will ignore any directory named `temp`, no matter where it appears in the project structure (e.g., `src/temp/`, `logs/temp/`, etc.).
+ 
+        2. **Match Files Across Directories** : 
+          - If you want to ignore all files of a certain type in any subdirectory, you can specify:
+
+            ```bash
+            **/*.log
+            ```
+            This will ignore all `.log` files in any directory, such as `logs/file.log` or `data/logs/another_file.log`.
+ 
+        3. **Combining with Other Patterns** : 
+          - You can combine `**` with other patterns to create more complex rules. For example:
+
+            ```javascript
+            **/build/**/*
+            ```
+            This ignores all files in any `build` directory, regardless of its depth.
+
+        #### Examples 
+        
+        - **Ignore All Folders Named `node_modules`** :
+
+          ```javascript
+          **/node_modules/
+          ```
+        
+        - **Ignore All `.tmp` Files in Any Directory** :
+
+          ```
+          **/*.tmp
+          ```
+        
+        - **Ignore All Files Named `config.json` in Any Directory** :
+
+          ```arduino
+          **/config.json
+          ```
+  
+  - **Negation:**  Prefix a pattern with `!` to negate it, meaning that Git will track files that match this pattern even if a broader pattern would ignore them (e.g., `!important.log` allows tracking of `important.log`).
+  
+  - **Comments:**  Lines starting with `#` are treated as comments and ignored.
+
+Step 3. **Effect on Tracking** 
+
+  - When you run `git add`, Git checks the `.gitignore` file and skips any files or   directories that match the specified patterns. This means they won’t be staged for commit or included in your repository.
+
+Step 4. **Updating the `.gitignore`** 
+  
+  - If you add new files or directories that you want to ignore after the initial commit, you may need to remove them from tracking using, because `.gitignore` only ignores files and directories in git that you haven't already included in your directory or repository. So if you accidentally include a file in your git repository and then later add it to `.gitignore`, git **is not** going to ignore that. To stop this problem, you have to remove this file from the staging area, which is what you're proposing for the next commit. To see the files in your directory, you can use:
+
+    ```bash
+    git ls-files
+    ```
+  
+  - The `git rm` command allows you to remove a file from **both** the working directory and the staging area. In this case, you don't want to remove the file from the working directoy, but you do want to remove it from the staging area (from the index). To do this you will use `git rm --cached`. You may have to use the recursive removal flag, `-r`, to remove directories from the staging area.
+
+
+    ```bash
+    git rm --cached -r <file|directory>
+    ```
+
+  - Then, adding the appropriate patterns to your `.gitignore` file will prevent them from being tracked in future commits.
+    
+Step 5. **Global `.gitignore`** 
+
+  - You can also set up a global `.gitignore` file that applies to all your repositories. This is useful for ignoring files like OS-specific files or IDE configurations. You can configure it with:
+
+  ```bash
+  git config --global core.excludesfile ~/.gitignore_global
+  ```
+
+If you go to [github.com/github/gitignore](https://github.com/github/gitignore), you can see various `.gitignore` templates from various different languages.
+
+Using a `.gitignore` file is a simple yet powerful way to maintain a clean and organized repository, ensuring that only relevant files are tracked by Git. This helps streamline collaboration and keeps your version history focused on the actual project files.
+
 ## Resetting commits
 
 <p align="center">
