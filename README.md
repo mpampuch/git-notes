@@ -1,9 +1,12 @@
 # git-notes
 
-## NOTE:
+## Git cheatsheets
 
-Practice git best practices by adding a `--outfile` parameter to `nf-whisper` that allows you to change the default file name of `transcription.txt`
-- Can also add an option to try an chop up the videos on the retry
+![alt text](git-cheatsheet-1.png)
+
+![alt text](git-cheatsheet-2.png)
+
+- https://jdsalaro.com/cheatsheet/git/index.html
 
 ## The .gitignore File
 
