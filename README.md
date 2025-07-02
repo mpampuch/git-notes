@@ -8,6 +8,10 @@
 
 - https://jdsalaro.com/cheatsheet/git/index.html
 
+# What is Git?
+
+Git is the most popular version control system in the world because it's free, open source, super fast and scalable.
+
 ## The .gitignore File
 
 A `.gitignore` file is used to keep a tidy and efficient repository. It tells Git which files or directories to ignore, ensuring that unnecessary clutter—like temporary files, logs, and build artifacts—doesn’t get committed. This not only keeps your repository clean but also improves collaboration by preventing irrelevant files from being shared among team members.
