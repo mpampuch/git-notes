@@ -12,6 +12,135 @@
 
 Git is the most popular version control system in the world because it's free, open source, super fast and scalable.
 
+## Git Configuration 
+
+When using Git for the first time, it’s important to set up a few configuration settings to ensure your environment behaves consistently. These settings help Git associate your commits with your identity, choose the right editor, and handle line endings properly.
+
+Git settings can be configured at **three levels**:
+
+-   **System level**: Applies to all users and repositories on the machine.
+    
+-   **Global level**: Applies to all repositories for the current user.
+    
+-   **Local level**: Applies to the specific repository in the current folder.
+    
+
+You can use the `git config` command with different flags to specify the level.
+
+---
+
+### Step 1. **Set Your User Name and Email**
+
+These are required to associate commits with your identity.
+
+```bash
+git config --global user.name "Your Full Name"
+git config --global user.email your.email@example.com
+```
+
+-   Use **double quotes** if your name includes spaces.
+    
+-   No need for quotes around the email unless it contains spaces (which is rare).
+    
+
+---
+
+### Step 2. **Set Your Default Editor**
+
+If you don’t specify an editor, on Mac, Git uses the system default—like `vim`, which may be unfamiliar.
+
+To use **Visual Studio Code**:
+
+```bash
+git config --global core.editor "code --wait"
+```
+
+-   The `--wait` flag tells Git to pause until you close the VS Code window.
+    
+-   Make sure `code` is in your system’s path. If not, follow platform-specific instructions to add it.
+    
+---
+
+### Step 3. **Edit Global Git Config File**
+
+All global Git settings are stored in a plain text config file. You can edit it manually:
+
+```bash
+git config --global -e
+```
+
+This opens the global config file in your default editor (e.g., VS Code). You’ll see:
+
+```ini
+[user]
+  name = Your Full Name
+  email = your.email@example.com
+
+[core]
+  editor = code --wait
+```
+
+You can make manual changes here if needed.
+
+---
+
+### Step 4. **Configure Line Endings (core.autocrlf)**
+
+Different operating systems handle end-of-line characters differently:
+
+-   **Windows**: Uses carriage return + line feed (`CRLF`)
+    
+-   **macOS/Linux**: Use just line feed (`LF`)
+    
+
+Misaligned line endings can cause annoying diffs and conflicts. To manage this properly, configure the `core.autocrlf` setting.
+
+#### Windows Users:
+
+```bash
+git config --global core.autocrlf true
+```
+
+-   Converts `CRLF` to `LF` when storing files in the repo.
+    
+-   Converts `LF` back to `CRLF` when checking out files.
+    
+
+#### macOS/Linux Users:
+
+```bash
+git config --global core.autocrlf input
+```
+
+-   Converts `CRLF` to `LF` when storing files in the repo.
+    
+-   Leaves line endings untouched on checkout.
+    
+
+This ensures consistent line endings across platforms and prevents errors in collaboration.
+
+---
+
+### Summary of Configuration Commands
+
+```bash
+# Set user identity
+git config --global user.name "Your Name"
+git config --global user.email your.email@example.com
+
+# Set preferred text editor
+git config --global core.editor "code --wait"
+
+# Configure line endings
+git config --global core.autocrlf true     # For Windows
+git config --global core.autocrlf input    # For macOS/Linux
+
+# Open global config file
+git config --global -e
+```
+
+By setting up these configurations at the beginning, you ensure Git behaves predictably and avoids platform-related issues—especially with line endings.
+
 ## The .gitignore File
 
 A `.gitignore` file is used to keep a tidy and efficient repository. It tells Git which files or directories to ignore, ensuring that unnecessary clutter—like temporary files, logs, and build artifacts—doesn’t get committed. This not only keeps your repository clean but also improves collaboration by preventing irrelevant files from being shared among team members.
