@@ -82,9 +82,9 @@ You can make manual changes here if needed.
 
 Different operating systems handle end-of-line characters differently:
 
--   **Windows**: Uses carriage return + line feed (`CRLF`)
+-   **Windows**: Uses carriage return + line feed (`\r\n`) (`CRLF`) 
     
--   **macOS/Linux**: Use just line feed (`LF`)
+-   **macOS/Linux**: Use just line feed (`\n`)(`LF`)
     
 
 Misaligned line endings can cause annoying diffs and conflicts. To manage this properly, configure the `core.autocrlf` setting.
