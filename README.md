@@ -27,7 +27,6 @@ Git settings can be configured at **three levels**:
 
 You can use the `git config` command with different flags to specify the level.
 
----
 
 ### Step 1. **Set Your User Name and Email**
 
@@ -43,8 +42,6 @@ git config --global user.email your.email@example.com
 -   No need for quotes around the email unless it contains spaces (which is rare).
     
 
----
-
 ### Step 2. **Set Your Default Editor**
 
 If you don’t specify an editor, on Mac, Git uses the system default—like `vim`, which may be unfamiliar.
@@ -59,7 +56,6 @@ git config --global core.editor "code --wait"
     
 -   Make sure `code` is in your system’s path. If not, follow platform-specific instructions to add it.
     
----
 
 ### Step 3. **Edit Global Git Config File**
 
@@ -81,8 +77,6 @@ This opens the global config file in your default editor (e.g., VS Code). You’
 ```
 
 You can make manual changes here if needed.
-
----
 
 ### Step 4. **Configure Line Endings (core.autocrlf)**
 
@@ -119,7 +113,6 @@ git config --global core.autocrlf input
 
 This ensures consistent line endings across platforms and prevents errors in collaboration.
 
----
 
 ### Summary of Configuration Commands
 
