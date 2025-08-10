@@ -263,9 +263,210 @@ Each commit contains:
 
 This snapshot-based approach makes Git extremely efficient and reliable for version control.
 
-Even though stores the whole content of the project in each snapshot, it doesn't take up too much memory because Git is very efficient. It compresses the data and doesn't store any duplicate content.
+Even though Git stores the whole content of the project in each snapshot, it doesn't take up too much memory because Git is very efficient. It compresses the data and doesn't store any duplicate content.
 
 ![](git-workflow/20250707141203.png)
+
+## Staging Files
+
+### Initial File Creation
+
+When you first initialize a Git repository, Git doesn't automatically track any files. You need to explicitly tell Git which files to track. Let's see this in action:
+
+```bash
+# Create files using standard Unix/Linux commands
+echo "hello" > file1.txt
+echo "hello" > file2.txt
+```
+
+After creating files, running `git status` will show them as **untracked files** (indicated in red), meaning Git is not yet tracking them.
+
+### Adding Files to Git
+
+To start tracking files, you use the `git add` command:
+
+```bash
+# Add a single file
+git add file1.txt
+
+# Add multiple files
+git add file1.txt file2.txt
+
+# Add all files with a specific extension
+git add *.txt
+
+# Add all files in the current directory (use with caution)
+git add .
+```
+
+> **⚠️ CAUTION**: Be careful with `git add .` as it adds the entire directory recursively. You might accidentally add files you don't want in your repository (like large binary files, log files, or temporary files). To prevent this behaviour, d.
+
+### Understanding File States
+
+After adding files, `git status` will show them in **green**, indicating they're now in the staging area and ready to be committed.
+
+### Modifying Files After Staging
+
+Here's an important concept: when you modify a file after adding it to the staging area, Git maintains two versions:
+
+1. **Staging Area**: Contains the version that was staged
+2. **Working Directory**: Contains the current modified version
+
+```bash
+# Modify a file after staging it
+echo "world" >> file1.txt  # Append "world" to file1.txt
+```
+
+Running `git status` now shows:
+
+- Files in the staging area (green) - ready to commit
+- Modified files in the working directory (red) - not yet staged
+
+![](staging-files/5.36.42.png)
+
+### Re-staging Modified Files
+
+To include the latest changes in your next commit, you need to re-stage the modified file:
+
+```bash
+# Re-stage the modified file
+git add file1.txt
+# or
+git add .
+```
+
+Now `git status` shows all files are staged and ready for commit.
+
+### Key Points to Remember
+
+1. **Git doesn't auto-track files**: You must explicitly add files to start tracking them
+2. **Staging is a snapshot**: When you `git add` a file, Git takes a snapshot of its current state
+3. **Modifications require re-staging**: If you modify a file after staging it, you need to stage it again
+4. **Use `git status` frequently**: It helps you understand what's staged vs. what's in your working directory
+
+## Committing Changes
+
+Once you have files staged in the staging area, you can commit them to permanently store the snapshot in your Git repository.
+
+### Basic Commit with Message
+
+The most common way to commit is using the `-m` flag to provide a commit message:
+
+```bash
+git commit -m "Initial commit"
+```
+
+This creates a commit with a short, descriptive message that identifies what the snapshot represents.
+
+### Detailed Commit Messages
+
+Sometimes a short one-liner isn't sufficient. You might need to explain context, constraints, or provide additional details. For detailed commit messages:
+
+```bash
+git commit
+```
+
+This opens your default editor (like VS Code) where you can write a multi-line commit message:
+
+```bash
+# Example commit message format:
+Initial commit
+
+This is our first commit to the repository. We're adding basic file structure
+and initial content to get started with the project.
+```
+
+**Commit Message Format:**
+
+- **First line**: Short description (ideally under 80 characters)
+- **Blank line**: Separates short description from detailed description
+- **Detailed description**: Additional context, explanations, or constraints
+
+> **💡 Note**: Lines starting with `#` are comments and will be ignored by Git.
+
+### Commit Statistics
+
+After committing, Git shows statistics about what was changed:
+
+```bash
+[main (root-commit) abc1234] Initial commit
+ 2 files changed, 3 insertions(+)
+ create mode 100644 file1.txt
+ create mode 100644 file2.txt
+```
+
+This tells you:
+
+- Number of files changed
+- Number of lines inserted/deleted
+- Which files were created/modified
+
+### Working Directory State After Commit
+
+After a successful commit:
+
+- Your working directory becomes "clean" (no uncommitted changes)
+- The staging area contains the same content as the last commit
+- All three areas (working directory, staging area, repository) are in sync
+
+### Best Practices for Committing
+
+#### 1. **Commit Size**
+
+- **Don't commit too frequently**: Avoid commits like "update file1", "update file2"
+- **Don't commit too infrequently**: Don't wait days or weeks to commit
+- **Aim for logical checkpoints**: Commit when you reach a meaningful state
+- **Real-world guideline**: 5-10 commits per day (but don't force it)
+
+#### 2. **Logical Separation**
+
+Each commit should represent a single, logical unit of work:
+
+```bash
+# ❌ Bad: Mixing unrelated changes
+git commit -m "Fix bug and fix typo"
+
+# ✅ Good: Separate commits for separate concerns
+git commit -m "Fix authentication bug in login form"
+git commit -m "Fix typo in README file"
+```
+
+#### 3. **Meaningful Commit Messages**
+
+- **Be descriptive**: Explain what the commit accomplishes
+- **Use present tense**: "Fix bug" instead of "Fixed bug"
+- **Be consistent**: Follow the same convention across your team
+- **Keep it simple**: If your commit represents a single unit of work, writing a good message becomes easier
+
+#### 4. **Commit Message Examples**
+
+```bash
+# ✅ Good examples:
+git commit -m "Add user authentication feature"
+git commit -m "Fix memory leak in image processing"
+git commit -m "Update API documentation"
+git commit -m "Refactor database connection logic"
+
+# ❌ Bad examples:
+git commit -m "stuff"
+git commit -m "fix"
+git commit -m "updates"
+git commit -m "wip"
+```
+
+### Unstaging Changes
+
+If you accidentally stage changes that shouldn't be in the same commit, you can unstage them:
+
+```bash
+# Unstage a specific file
+git reset HEAD <filename>
+
+# Unstage all files
+git reset HEAD
+```
+
+This moves files back to the working directory without losing your changes.
 
 ### Best Practices
 
