@@ -2195,6 +2195,30 @@ git tag --sort=-committerdate
 git tag -l --format='%(refname:short) %(committerdate) %(contents:subject)'
 ```
 
+---
+
+## Branching
+
+## What are Branches?
+
+In this section, we're going to talk about one of the most important and powerful features of Git called **branching**. It'll talk about how to use branches to diverge from the main line of development, and then work on something else in isolation, how to compare branches to see their differences, how to merge them, we'll talk about different merging techniques, like three way merging, fast forwarding, squash merging, and rebasing. It'll also talk about resolving merge conflicts, undoing a faulty merge, and using essential tools like stashing and cherry picking. Effectively utilizing branching will change the way you develop software.
+
+### The Concept of Branching
+
+**Branching** allows us to diverge from the main line of work and work on something else in isolation. Conceptually, you can think of a branch like a separate isolated workspace. So, we have our main workspace, which is called `master` (or `main`), we can have another workspace for working on a new feature in isolation.
+
+While we're developing this new feature, our code might become unstable. So, we don't want to release the code in this workspace, we continue working here. When we're done, we test our code, and after we fix all the bugs, then we bring the changes in this workspace into the master. This is called **merging**.
+
+So, branching allows us to work on different work items without messing up with the main line of work. We keep the main line as stable as possible, so we can release it anytime. Also, anyone joining our team can start off on a stable code base.
+
+### How Git Manages Branches
+
+The way Git manages branches is very different from many other version control systems like Subversion. In Subversion, when we create a new branch, Subversion takes a copy of our entire working directory and stores it somewhere else. What if you have hundreds or thousands of files in our project? All these files have to be copied, and this operation can take a little while.
+
+That's why a lot of Subversion users hate branching because it's slow and can waste a lot of disk space.
+
+**Git branches are super fast and cheap** because a branch in Git is just a **pointer to a commit**. So the `master` branch is just a pointer to the last commit in the main line of work. As we make new commits, Git moves this pointer forward automatically. So it knows what is the latest code in the main line of work. That is the snapshot stored in this commit.
+
 <p align="center">
 <img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
 </p>
