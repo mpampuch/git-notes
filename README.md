@@ -495,6 +495,13 @@ git commit -am "Fix the bug that prevented users from signing up"
 - **Complex changes**: Any significant modifications should be staged and reviewed
 - **Team collaboration**: Always stage changes when working with others
 
+### Best Practices
+
+1. **Meaningful Commit Messages**: Each commit should have a clear, descriptive message explaining what the snapshot represents
+2. **Review Before Committing**: Always check what's staged using `git status` before committing
+3. **Atomic Commits**: Group related changes togethe dr in single commits
+4. **Frequent Commits**: Make commits often to create a detailed project history
+
 ## Removing Files from Git
 
 ### Manual File Removal
@@ -556,12 +563,83 @@ git commit -m "Remove unused files"
 - **Review before committing**: Make sure you're not accidentally removing needed files
 - **Consider `.gitignore`**: For files you want to stop tracking but keep locally
 
-### Best Practices
+## Renaming and Moving Files
 
-1. **Meaningful Commit Messages**: Each commit should have a clear, descriptive message explaining what the snapshot represents
-2. **Review Before Committing**: Always check what's staged using `git status` before committing
-3. **Atomic Commits**: Group related changes togethe dr in single commits
-4. **Frequent Commits**: Make commits often to create a detailed project history
+### Manual File Renaming
+
+Renaming or moving files in Git is a two-step operation that involves both deletion and addition:
+
+```bash
+# Step 1: Rename the file in your working directory
+mv file1.txt main.js
+
+# Step 2: Stage both the deletion and addition
+git add file1.txt    # Stage the deletion of the old file
+git add main.js      # Stage the addition of the new file
+
+# Step 3: Commit the changes
+git commit -m "Rename file1.txt to main.js"
+```
+
+### Understanding the Process
+
+When you rename a file manually, Git recognizes it as two separate operations:
+
+- **Deletion**: The old filename is removed
+- **Addition**: The new filename is added
+
+Running `git status` will show:
+
+```bash
+Changes to be committed:
+  deleted:    file1.txt
+  new file:   main.js
+```
+
+### Using `git mv` (Recommended)
+
+Git provides a convenient command that handles renaming in one step:
+
+```bash
+# Rename file using git mv
+git mv main.js file1.js
+
+# Move file to a different directory
+git mv file1.js src/file1.js
+
+# Commit the rename operation
+git commit -m "Refactor code: rename main.js to file1.js"
+```
+
+### Advantages of `git mv`
+
+1. **One-step operation**: Handles both deletion and addition automatically
+2. **Preserves history**: Git maintains the file's history across the rename
+3. **Safer**: Less chance of forgetting to stage one of the operations
+4. **Clearer intent**: Makes it obvious you're renaming/moving files
+
+### File Rename Statistics
+
+When you commit a rename operation, Git shows statistics like:
+
+```bash
+[main abc1234] Refactor code
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename file1.txt => file1.js (100%)
+```
+
+This indicates:
+
+- One file was changed (renamed)
+- No lines were added or deleted (content remained the same)
+- The file was 100% renamed (not just partially moved)
+
+### Rename Best Practices
+
+- **Use `git mv`**: Prefer `git mv` over manual `mv` + `git add`
+- **Meaningful commit messages**: Explain why you're renaming the file
+- **Preserve history**: `git mv` maintains the file's commit history
+- **Consider impact**: Renaming files can affect other parts of your project
 
 ## The .gitignore File
 
@@ -667,9 +745,1455 @@ git config --global core.excludesfile ~/.gitignore_global
 
 If you go to [github.com/github/gitignore](https://github.com/github/gitignore), you can see various `.gitignore` templates from various different languages.
 
+### Common Files to Ignore
+
+Here are examples of typical files and directories you might want to ignore:
+
+```bash
+# Log files
+*.log
+logs/
+
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build artifacts
+build/
+dist/
+node_modules/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+```
+
+### .gitignore Best Practices
+
+- **Be specific**: Don't ignore entire directories unless necessary
+- **Consider team needs**: Make sure ignored files don't break the project for others
+- **Document exceptions**: Use `!` to force-include specific files in ignored directories
+- **Test your patterns**: Make sure you're not accidentally ignoring important files
+
 Using a `.gitignore` file is a simple yet powerful way to maintain a clean and organized repository, ensuring that only relevant files are tracked by Git. This helps streamline collaboration and keeps your version history focused on the actual project files.
 
-## Resetting commits
+## Short Status
+
+The `git status` command provides comprehensive but verbose output. For a more concise view, use the `-s` (short) flag:
+
+```bash
+# Verbose status output
+git status
+
+# Short status output
+git status -s
+```
+
+### Understanding Short Status Output
+
+The short status shows two columns:
+
+- **Left column**: Staging area (index)
+- **Right column**: Working directory
+
+### Status Indicators
+
+| Symbol | Meaning        |
+| ------ | -------------- |
+| `M`    | Modified file  |
+| `A`    | Added file     |
+| `D`    | Deleted file   |
+| `R`    | Renamed file   |
+| `C`    | Copied file    |
+| `U`    | Unmerged file  |
+| `??`   | Untracked file |
+
+### Example Workflow
+
+```bash
+# Modify an existing file and create a new one
+echo "sky" >> file1.js
+echo "sky" > file2.js
+
+# Check status
+git status -s
+# Output: M  file1.js
+#         ?? file2.js
+
+# Stage file1.js
+git add file1.js
+git status -s
+# Output: M  file1.js
+#         ?? file2.js
+
+# Modify file1.js again after staging
+echo "ocean" >> file1.js
+git status -s
+# Output: MM file1.js
+#         ?? file2.js
+
+# Re-stage file1.js
+git add file1.js
+git status -s
+# Output: M  file1.js
+#         ?? file2.js
+
+# Stage file2.js
+git add file2.js
+git status -s
+# Output: M  file1.js
+#         A  file2.js
+```
+
+## Viewing the Staged and Unstaged Changes
+
+Before committing, it's essential to review your changes. The `git diff` command shows you exactly what lines have been modified.
+
+### Viewing Staged Changes
+
+To see what's staged for the next commit:
+
+```bash
+git diff --staged
+# or
+git diff --cached
+```
+
+### Viewing Unstaged Changes
+
+To see changes in your working directory that aren't staged:
+
+```bash
+git diff
+```
+
+### Understanding Diff Output
+
+The diff output follows this format:
+
+```bash
+diff --git a/file1.js b/file1.js
+index abc1234..def5678 100644
+--- a/file1.js
++++ b/file1.js
+@@ -1,3 +1,5 @@
+ hello
+ world
++sky
++ocean
+```
+
+![](viewing-commits/6.01.36.png)
+
+**Key elements:**
+
+- `--- a/file1.js`: Old version (from last commit or staging area)
+- `+++ b/file1.js`: New version (from staging area or working directory)
+- `-` (red): Lines removed
+- `+` (green): Lines added
+- `@@ -1,3 +1,5 @@`: Context showing line numbers and chunk size
+
+### Diff Best Practices
+
+- **Always review before committing**: Use `git diff --staged` or `git diff --cached` to see what will be committed
+- **Check unstaged changes**: Use `git diff` to see what still needs to be staged
+- **Understand the output**: Learn to read diff format for terminal-only environments
+
+## Visual Diff Tools
+
+While terminal diffs are powerful, visual tools make comparing files much easier.
+
+### Popular Visual Diff Tools
+
+- **Kdiff3**: Cross-platform, free
+- **P4Merge**: Cross-platform, free
+- **WinMerge**: Windows only, free
+- **VS Code**: Built-in diff viewer
+
+### Configuring VS Code as Diff Tool
+
+```bash
+# Set VS Code as the default diff tool
+git config --global diff.tool vscode
+
+# Configure the command to launch VS Code
+git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+```
+
+### Using Visual Diff Tools
+
+```bash
+# View unstaged changes
+git difftool
+
+# View staged changes
+git difftool --staged
+# or
+git difftool --cached
+```
+
+### VS Code Configuration Details
+
+The configuration includes:
+
+- `--wait`: Terminal waits until VS Code is closed
+- `--diff`: Tells VS Code to open in diff mode
+- `$LOCAL`: Placeholder for the old file version
+- `$REMOTE`: Placeholder for the new file version
+
+> **💡 Note**: Modern editors and IDEs often have built-in Git integration that shows staged and unstaged changes directly in the development environment, making dedicated diff tools less necessary for daily use.
+
+## Viewing the History
+
+The `git log` command shows your commit history, allowing you to see what changes were made and when.
+
+### Basic Log Command
+
+```bash
+git log
+```
+
+**Output includes:**
+
+- Commit hash (unique identifier)
+- Author name and email
+- Date and time
+- Commit message
+
+### Log Output Example
+
+```bash
+commit d601b90abc123def456
+Author: John Doe <john@example.com>
+Date:   Mon Jan 15 10:30:00 2024 +0000
+
+    Add user authentication feature
+
+commit a1b2c3d4e5f678901
+Author: John Doe <john@example.com>
+Date:   Mon Jan 15 09:15:00 2024 +0000
+
+    Initial commit
+```
+
+### Useful Log Options
+
+```bash
+# One-line format (shorter output)
+git log --oneline
+
+# Reverse order (oldest first)
+git log --reverse
+
+# Combine options
+git log --oneline --reverse
+
+# Limit number of commits
+git log -n 5
+
+# Show commits by specific author
+git log --author="John Doe"
+```
+
+### Understanding Commit References
+
+- **HEAD**: Points to the current branch
+- **master/main**: The main branch (primary line of development)
+- **Commit hash**: Unique identifier for each commit
+- **Short hash**: First 7 characters of the full hash
+
+### Navigation in Log Output
+
+- **Space**: Go to next page
+- **Enter**: Go to next line
+- **q**: Quit and return to terminal
+
+## Viewing a Commit
+
+The `git show` command displays detailed information about a specific commit.
+
+### Basic Show Command
+
+```bash
+# Show the latest commit
+git show
+
+# Show a specific commit by hash
+git show d601b90
+
+# Show with one-line format
+git show --oneline d601b90
+```
+
+### Show Output Example
+
+```bash
+commit d601b90abc123def456
+Author: John Doe <john@example.com>
+Date:   Mon Jan 15 10:30:00 2024 +0000
+
+    Add user authentication feature
+
+diff --git a/auth.js b/auth.js
+new file mode 100644
+index 0000000..abc1234
+--- /dev/null
++++ b/auth.js
+@@ -0,0 +1,10 @@
++function login(username, password) {
++    // Authentication logic
++    return validateCredentials(username, password);
++}
++
++function logout() {
++    // Logout logic
++    clearSession();
++}
+```
+
+### What Show Displays
+
+1. **Commit metadata**: Hash, author, date, message
+2. **File changes**: Which files were modified
+3. **Diff output**: Exact lines that were added/removed
+4. **Statistics**: Number of files and lines changed
+
+### Referencing Commits
+
+```bash
+# By full hash
+git show d601b90abc123def456
+
+# By short hash (first 7+ characters)
+git show d601b90
+
+# By relative reference
+git show HEAD~1    # Previous commit
+git show HEAD~2    # Two commits back
+
+# By branch name
+git show main      # Latest commit on main branch
+```
+
+### Show Options
+
+```bash
+# Show only the commit message
+git show --no-patch d601b90
+
+# Show only the diff
+git show --stat d601b90
+
+# Show in a specific format
+git show --format=fuller d601b90
+```
+
+## Unstaging Files
+
+After reviewing your staged changes, you might realize that some files shouldn't be part of the next commit. Git provides the `restore` command to unstage files (requires Git 2.23+).
+
+### Using `git restore` to Unstage
+
+```bash
+# Unstage a specific file
+git restore --staged file1.js
+
+# Unstage multiple files
+git restore --staged file1.js file2.js
+
+# Unstage all files in the staging area
+git restore --staged .
+```
+
+### How `git restore --staged` Works
+
+The `restore` command restores files from a specified source:
+
+- **With `--staged`**: By default, restores from HEAD (last commit)
+- **Without `--staged`**: By default, restores from the index (staging area)
+
+When you unstage a file, Git:
+
+1. Takes the version from HEAD (last commit)
+2. Places it in the staging area
+3. Your working directory changes remain untouched
+
+### Example Workflow
+
+```bash
+# Check current status
+git status -s
+# Output: M  file1.js
+#         A  file2.js
+
+# Unstage file1.js
+git restore --staged file1.js
+
+# Check status again
+git status -s
+# Output:  M file1.js    (unstaged changes)
+#          A file2.js    (still staged)
+```
+
+### Handling New Files
+
+For new files (untracked files that were staged):
+
+- When you unstage them, they return to "untracked" status
+- They appear as `??` in the status output
+- This is because they don't exist in the last commit
+
+## Discarding Local Changes
+
+Sometimes you want to completely discard changes in your working directory and start over.
+
+### Discarding Changes in Working Directory
+
+```bash
+# Discard changes in a specific file
+git restore file1.js
+
+# Discard all local changes
+git restore .
+```
+
+### How `git restore` Works for Working Directory
+
+When you restore a file in the working directory:
+
+- Git takes the version from the index (staging area)
+- Copies it to your working directory
+- Any uncommitted changes are lost
+
+### Removing Untracked Files
+
+The `restore` command only works for tracked files. To remove untracked files:
+
+```bash
+# See what would be removed (dry run)
+git clean -n
+
+# Remove untracked files
+git clean -f
+
+# Remove untracked files and directories
+git clean -fd
+
+# Remove untracked files, directories, and ignored files
+git clean -fdx
+```
+
+> **⚠️ CAUTION**: The `git clean` command permanently deletes files. There's no way to recover them once deleted. Always use `git clean -n` first to see what will be removed. The command requires the `-f` (force) flag to actually delete files.
+
+### Complete Cleanup Example
+
+```bash
+# Check current status
+git status -s
+# Output:  M file1.js    (modified tracked file)
+#         ?? file2.js    (untracked file)
+
+# Discard changes in tracked file
+git restore file1.js
+
+# Remove untracked file
+git clean -f
+
+# Verify clean state
+git status -s
+# Output: (clean working directory)
+```
+
+## Restoring a File to an Earlier Version
+
+Git stores every version of tracked files in its database, allowing you to restore files to any previous state.
+
+### Restoring from a Specific Commit
+
+```bash
+# Restore a file to its state in the last commit
+git restore file1.js
+
+# Restore a file to its state in a specific commit
+git restore --source=HEAD~1 file1.js
+
+# Restore a file to its state in a specific commit (alternative syntax)
+git restore --source=abc1234 file1.js
+```
+
+### Understanding the `--source` Parameter
+
+The `--source` parameter tells Git where to get the file version from:
+
+- **Default behavior**:
+  - With `--staged`: Restores from HEAD
+  - Without `--staged`: Restores from the index (staging area)
+- **`--source=HEAD~1`**: Restores from the commit before HEAD
+- **`--source=abc1234`**: Restores from a specific commit hash
+- **`--source=main`**: Restores from the latest commit on main branch
+
+### Example: Restoring a Deleted File
+
+```bash
+# Delete a file
+git rm file1.js
+git commit -m "Delete file1.js"
+
+# Realize you need the file back
+git restore --source=HEAD~1 file1.js
+
+# Check status
+git status -s
+# Output: ?? file1.js    (restored as untracked file)
+```
+
+### Restore Command Options
+
+```bash
+# Restore file to working directory
+git restore file1.js
+
+# Restore file to staging area
+git restore --staged file1.js
+
+# Restore file to working directory from specific source
+git restore --source=HEAD~1 file1.js
+
+# Restore file to staging area from specific source
+git restore --staged --source=HEAD~1 file1.js
+```
+
+### Best Practices for File Restoration
+
+1. **Always review before restoring**: Use `git log` to find the right commit
+2. **Use specific commit references**: Be explicit about which version you want
+3. **Check status after restoration**: Verify the file is in the expected state
+4. **Consider the impact**: Restoring files can affect other parts of your project
+5. **Use `--staged` when appropriate**: Decide whether to restore to staging area or working directory
+
+---
+
+## Browsing the History
+
+This section covers advanced techniques for exploring and understanding your Git repository's history. We'll work with a sample repository to demonstrate various ways to view, filter, and format commit history.
+
+## Getting a Repository
+
+To follow along with the examples in this section, you'll need a repository with some history to work with. You can:
+
+1. **Use your own repository**: Any Git repository with multiple commits
+2. **Create a sample repository**: Make several commits to practice with
+3. **Download a sample**: Use a repository like the "Venus" project mentioned in the course
+
+The key is having a repository with enough commits to demonstrate the filtering and browsing capabilities.
+
+## Filtering the History
+
+In real repositories, you often have hundreds or thousands of commits. Git provides powerful filtering options to help you find specific commits.
+
+### Limiting the Number of Commits
+
+```bash
+# Show only the last 3 commits
+git log --oneline -3
+
+# Show only the last 5 commits
+git log --oneline -5
+```
+
+### Filtering by Author
+
+```bash
+# Show commits by a specific author
+git log --oneline --author="John Doe"
+
+# Show commits by author (case-insensitive)
+git log --oneline --author="john"
+
+# Show commits by author using regex pattern
+git log --oneline --author="John.*"
+```
+
+### Filtering by Date
+
+```bash
+# Show commits from a specific date onwards
+git log --oneline --since="2020-08-17"
+
+# Show commits before a specific date
+git log --oneline --before="2020-08-17"
+
+# Show commits from yesterday
+git log --oneline --since="yesterday"
+
+# Show commits from one week ago
+git log --oneline --since="1 week ago"
+
+# Show commits from two days ago
+git log --oneline --since="2 days ago"
+
+# Show commits from one month ago
+git log --oneline --since="1 month ago"
+```
+
+### Filtering by Commit Message
+
+```bash
+# Show commits with "bug" in the message (case-sensitive)
+git log --oneline --grep="bug"
+
+# Show commits with "feature" in the message
+git log --oneline --grep="feature"
+
+# Show commits with "bug" in the message (case-insensitive)
+git log --oneline --grep="bug" -i
+
+# Show commits that match multiple patterns
+git log --oneline --grep="bug" --grep="fix"
+```
+
+### Filtering by Content
+
+```bash
+# Show commits that added or removed specific content
+git log --oneline -S "function_name"
+
+# Show commits that added or removed specific text
+git log --oneline -S "objectives"
+
+# Show commits that changed content matching a regex pattern
+git log --oneline -G "function.*"
+```
+
+### Filtering by Commit Range
+
+```bash
+# Show commits between two specific commits
+git log --oneline abc123..def456
+
+# Show commits from a specific commit to HEAD
+git log --oneline abc123..HEAD
+```
+
+### Filtering by File
+
+```bash
+# Show commits that modified a specific file
+git log --oneline filename.txt
+
+# Show commits that modified multiple files
+git log --oneline file1.txt file2.txt
+
+# Use -- to separate options from filenames (if needed)
+git log --oneline -- filename.txt
+```
+
+## Formatting the Log Output
+
+Git's `log` command is highly customizable. You can create your own output format to display exactly the information you need.
+
+### Using `--pretty=format`
+
+```bash
+# Basic custom format
+git log --pretty=format:"%h - %an, %ar : %s"
+
+# More detailed format
+git log --pretty=format:"%C(green)%an%C(reset) committed %C(blue)%h%C(reset) on %C(yellow)%cd%C(reset)"
+```
+
+### Common Format Placeholders
+
+| Placeholder | Description                           |
+| ----------- | ------------------------------------- |
+| `%H`        | Full commit hash                      |
+| `%h`        | Abbreviated commit hash               |
+| `%an`       | Author name                           |
+| `%ae`       | Author email                          |
+| `%ad`       | Author date (respects --date= option) |
+| `%ar`       | Author date, relative                 |
+| `%at`       | Author date, UNIX timestamp           |
+| `%s`        | Subject (commit message)              |
+| `%b`        | Body (commit message body)            |
+| `%n`        | Newline                               |
+| `%cn`       | Committer name                        |
+| `%ce`       | Committer email                       |
+
+### Color Formatting
+
+```bash
+# Color the author name in green
+git log --pretty=format:"%C(green)%an%C(reset) committed %h"
+
+# Color the commit hash in blue
+git log --pretty=format:"%an committed %C(blue)%h%C(reset)"
+
+# Color the date in yellow
+git log --pretty=format:"%an committed %h on %C(yellow)%ar%C(reset)"
+```
+
+### Common Color Options
+
+- `%C(red)` - Red text
+- `%C(green)` - Green text
+- `%C(blue)` - Blue text
+- `%C(yellow)` - Yellow text
+- `%C(reset)` - Reset to default color
+- `%C(auto)` - Automatic color based on Git's color scheme
+
+## Creating Aliases
+
+Git aliases allow you to create shortcuts for frequently used commands, making your workflow more efficient.
+
+### Setting Up Aliases
+
+```bash
+# Create a custom log alias
+git config --global alias.lg "log --pretty=format:'%C(green)%an%C(reset) committed %C(blue)%h%C(reset) on %C(yellow)%ar%C(reset)'"
+
+# Create an unstage alias
+git config --global alias.unstage "restore --staged ."
+
+# Create a last alias to see the last commit
+git config --global alias.last "log -1 HEAD"
+
+# Create a shell command alias (note the ! prefix)
+git config --global alias.visual "!gitk --all --not ORIG_HEAD"
+```
+
+### Using Aliases
+
+```bash
+# Use your custom log format
+git lg
+
+# Unstage all files
+git unstage
+
+# See the last commit
+git last
+```
+
+### Viewing Your Aliases
+
+```bash
+# List all aliases
+git config --get-regexp alias
+
+# Edit aliases in your config file
+git config --global -e
+
+# View a specific alias
+git config --get alias.lg
+```
+
+### Example Alias Configuration
+
+Your `.gitconfig` file might look like this:
+
+```ini
+[alias]
+    lg = log --pretty=format:'%C(green)%an%C(reset) committed %C(blue)%h%C(reset) on %C(yellow)%ar%C(reset)'
+    unstage = restore --staged .
+    last = log -1 HEAD
+    st = status
+    co = checkout
+    br = branch
+```
+
+## Viewing a Commit
+
+The `git show` command provides detailed information about specific commits.
+
+### Basic Show Command
+
+```bash
+# Show the latest commit
+git show
+
+# Show a specific commit by hash
+git show abc123
+
+# Show a commit using relative reference
+git show HEAD~2
+```
+
+### Show Options
+
+```bash
+# Show only the commit message (no diff)
+git show --no-patch HEAD~2
+
+# Show only the names of changed files
+git show --name-only HEAD~2
+
+# Show file names and change types
+git show --name-status HEAD~2
+
+# Show statistics
+git show --stat HEAD~2
+```
+
+### Viewing File Content in a Commit
+
+```bash
+# Show the content of a specific file in a commit
+git show HEAD~2:path/to/file.txt
+
+# Show the content of a file in the root directory
+git show HEAD~2:README.md
+```
+
+### Understanding Show Output
+
+The `git show` command displays:
+
+1. **Commit metadata**: Hash, author, date, message
+2. **File changes**: Which files were modified
+3. **Diff output**: Exact lines that were added/removed
+4. **Statistics**: Number of files and lines changed
+
+## Viewing the Changes Across Commits
+
+The `git diff` command can compare any two commits to see what changed between them.
+
+### Comparing Two Commits
+
+```bash
+# Compare the last two commits
+git diff HEAD~2..HEAD
+
+# Compare specific commits
+git diff abc123..def456
+
+# Compare with one-line format
+git diff --oneline HEAD~2..HEAD
+```
+
+### Diff Options
+
+```bash
+# Show only the names of changed files
+git diff --name-only HEAD~2..HEAD
+
+# Show file names and change types
+git diff --name-status HEAD~2..HEAD
+
+# Show statistics
+git diff --stat HEAD~2..HEAD
+
+# Show changes in a specific file
+git diff HEAD~2..HEAD filename.txt
+```
+
+### Understanding Diff Output
+
+When comparing commits, Git shows:
+
+- **File changes**: Which files were added, modified, or deleted
+- **Line changes**: Exact lines added (+) and removed (-)
+- **Context**: Surrounding lines to provide context
+- **Statistics**: Summary of changes
+
+### Practical Examples
+
+```bash
+# See what changed in the last 3 commits
+git diff HEAD~3..HEAD
+
+# See changes in a specific file over the last 5 commits
+git diff HEAD~5..HEAD src/main.js
+
+# See only the file names that changed recently
+git diff --name-only HEAD~10..HEAD
+```
+
+### Best Practices for History Browsing
+
+1. **Use appropriate filters**: Don't overwhelm yourself with too many commits
+2. **Create useful aliases**: Set up shortcuts for commands you use frequently
+3. **Combine options**: Use multiple filters together for precise results
+4. **Use relative references**: `HEAD~n` is often more convenient than commit hashes
+5. **Check the documentation**: Git has many more options than covered here
+
+## Checking Out a Commit
+
+Sometimes you want to see the complete snapshot of your project at a specific point in time. Git allows you to check out any commit to restore your working directory to that exact state.
+
+### Basic Checkout Command
+
+```bash
+# Check out a specific commit
+git checkout abc123
+
+# Check out using relative reference
+git checkout HEAD~3
+
+# Return to the latest commit on the current branch
+git checkout main
+```
+
+### Understanding Detached HEAD State
+
+When you check out a specific commit (not a branch), Git puts you in what's called a **detached HEAD state**. This is a normal Git concept that many find confusing, but it's actually quite simple.
+
+![](checking-out/20250710172948.png)
+
+The way git represents branches is using a **pointer**. So `master` is pointing to the last commit we have created so far. So as we create new commits, `master` moves forward to point to the last commit. Now, because we can have multiple branches, git needs to know what is the branch we're currently working on. To do that, it uses another special pointer called `HEAD`. So `HEAD` points to the current branch we're working on, in this case, `master`. You've seen this before. In our log, you can see, `HEAD` is pointing to `master`, and this item is in front of the last commit. So as we create new commits, these two pointers, `HEAD` and `master`, will move forward. Now here's the thing, when we check out a particular commit, the `HEAD` pointer will move to that commit. This is what we call the detached `HEAD`.
+
+#### What is HEAD?
+
+- **HEAD** is a special pointer that tells Git which commit you're currently working on
+- **Normally**, HEAD points to a branch (like `main` or `master`)
+- **In detached HEAD state**, HEAD points directly to a specific commit
+
+Normal state:
+
+![](checking-out/20250710173152.png)
+
+Detached HEAD state:
+
+![](checking-out/20250710173212.png)
+
+### Why Detached HEAD Happens
+
+When you check out a specific commit:
+
+1. HEAD moves to point to that commit
+2. HEAD is no longer attached to a branch
+3. Your working directory reflects that exact commit's state
+
+### Working in Detached HEAD State
+
+#### What You Can Do Safely
+
+```bash
+# View files and code
+git log --oneline
+git show HEAD
+
+# Make experimental changes
+# (but don't commit them unless you know what you're doing)
+```
+
+> **⚠️ CAUTION**
+>
+> **What You Should Avoid in Detached HEAD State:**
+>
+> - **Creating commits** in detached HEAD state (unless you plan to save them)
+> - **Making permanent changes** without a plan to preserve them
+
+### The Problem with Committing in Detached HEAD
+
+If you create a commit while in detached HEAD state:
+
+![](checking-out/20250710173250.png)
+
+The new commit becomes what's known as **orphaned**.
+
+This is because eventually you will move the `HEAD` pointer to another branch.
+
+![](checking-out/20250710173303.png)
+
+At this stage, the new commit is not reachable from any branch. Git's garbage collection will eventually delete orphaned commits to save space.
+
+![](checking-out/20250710173320.png)
+
+### Returning from Detached HEAD State
+
+```bash
+# Return to the latest commit on main branch
+git checkout main
+
+# Return to the latest commit on current branch
+git checkout -
+
+# Create a new branch to save your changes (if you made any)
+git checkout -b experimental-branch
+```
+
+### Viewing History in Detached HEAD State
+
+When in detached HEAD state, `git log` only shows commits from that point backward:
+
+```bash
+# Shows only commits from current commit backward
+git log --oneline
+
+# Shows all commits including those "ahead" of current position
+git log --oneline --all
+```
+
+### Best Practices for Checkout
+
+1. **Use for exploration**: Check out commits to explore your project's history
+2. **Avoid committing**: Don't create commits unless you plan to save them
+3. **Create branches**: If you want to work from an old commit, create a branch first
+4. **Know your state**: Always check which commit you're on with `git log --oneline`
+5. **Return safely**: Use `git checkout main` to return to your main branch
+
+### Example Workflow
+
+```bash
+# Check out an old commit to explore
+git checkout abc123
+
+# You're now in detached HEAD state
+# Terminal shows: (HEAD detached at abc123)
+
+# Explore the code at this point in time
+ls
+cat some-file.txt
+
+# Return to main branch
+git checkout main
+
+# You're back to normal state
+# Terminal shows: (main)
+```
+
+## Finding Bugs Using Bisect
+
+Git's `bisect` command is an incredibly powerful tool for quickly finding the commit that introduced a bug. Instead of manually checking out each commit, bisect uses a binary search algorithm to efficiently narrow down the problematic commit.
+
+### How Bisect Works
+
+Bisect works by:
+
+1. **Identifying a good commit**: A commit where the bug doesn't exist
+2. **Identifying a bad commit**: A commit where the bug exists
+3. **Binary search**: Git automatically checks out commits in the middle and asks you to test them
+4. **Narrowing down**: Based on your test results, Git eliminates half the commits from consideration
+
+### Starting a Bisect Session
+
+```bash
+# Start the bisect process
+git bisect start
+
+# Mark the current commit as bad (has the bug)
+git bisect bad
+
+# Mark a known good commit
+git bisect good abc123
+
+# Alternative: Start with both good and bad commits
+git bisect start HEAD abc123  # HEAD is bad, abc123 is good
+```
+
+### The Bisect Process
+
+Once you start bisect, Git will:
+
+1. Check out a commit in the middle of your range
+2. Ask you to test if the bug exists
+3. You respond with `git bisect good` or `git bisect bad`
+4. Git narrows down the range and repeats
+
+### Example Workflow
+
+```bash
+# Start bisect
+git bisect start
+
+# Mark current commit as bad
+git bisect bad
+
+# Mark an old commit as good
+git bisect good def456
+
+# Git checks out a middle commit
+# Test your application...
+
+# If bug exists in this commit
+git bisect bad
+
+# If bug doesn't exist in this commit
+git bisect good
+
+# Continue until Git finds the first bad commit
+```
+
+### Understanding Bisect Output
+
+During bisect, you'll see output like:
+
+```bash
+Bisecting: 5 revisions left to test after this (roughly 3 steps)
+```
+
+This tells you:
+
+- How many commits are left to test
+- Approximately how many steps remain
+
+### Finishing Bisect
+
+```bash
+# When bisect finds the first bad commit, it will show details
+# Then reset to return to normal state
+git bisect reset
+```
+
+### Bisect Best Practices
+
+1. **Have a reliable test**: Make sure you can quickly determine if the bug exists
+2. **Choose good boundaries**: Pick a good commit that's definitely before the bug
+3. **Use automated tests**: If possible, automate the testing process with `git bisect run`
+4. **Take notes**: Document what you find during the bisect process
+5. **Use skip when needed**: Use `git bisect skip` for commits that can't be tested
+
+### Automated Bisect
+
+You can automate the entire bisect process if you have a script that can test for the bug:
+
+```bash
+# Run automated bisect with a test script
+git bisect run ./test-script.sh
+
+# The script should exit with:
+# - 0: if the commit is good
+# - 1-127 (except 125): if the commit is bad
+# - 125: if the commit should be skipped
+```
+
+## Finding Contributors Using Shortlog
+
+The `git shortlog` command provides a summary of commit history grouped by author, making it easy to see who has contributed to your project.
+
+### Basic Shortlog
+
+```bash
+# Show contributors and their commits
+git shortlog
+
+# Show only commit counts (suppress descriptions)
+git shortlog -s
+
+# Show email addresses
+git shortlog -e
+
+# Sort by number of commits
+git shortlog -n
+
+# Show numbered summary
+git shortlog --numbered
+```
+
+### Shortlog Options
+
+```bash
+# Show contributors with email addresses
+git shortlog -s -e
+
+# Sort by commit count (most active first)
+git shortlog -n -s
+
+# Filter by date range
+git shortlog --since="1 month ago" --until="today"
+
+# Show only specific authors
+git shortlog --author="John Doe"
+```
+
+### Understanding Shortlog Output
+
+```bash
+John Doe (5):
+      Add user authentication feature
+      Fix login bug
+      Update documentation
+      Refactor database layer
+      Add password reset functionality
+
+Jane Smith (3):
+      Add unit tests
+      Fix typo in README
+      Update dependencies
+```
+
+### Shortlog Best Practices
+
+1. **Use for project overview**: Get a quick sense of who's contributing
+2. **Combine with date filters**: See recent activity vs. historical contributions
+3. **Export for reports**: Use shortlog output for project documentation
+4. **Filter by file**: See who worked on specific parts of the codebase
+
+## Viewing the History of a File
+
+You can view the complete history of changes to a specific file using `git log` with a filename.
+
+### Basic File History
+
+```bash
+# Show all commits that modified a file
+git log filename.txt
+
+# Show with one-line format
+git log --oneline filename.txt
+
+# Show with statistics
+git log --stat filename.txt
+
+# Show with actual changes (patch)
+git log --patch filename.txt
+```
+
+### File History Options
+
+```bash
+# Show commits that modified multiple files
+git log file1.txt file2.txt
+
+# Show commits that modified files in a directory
+git log src/
+
+# Use -- to separate options from filenames (if needed)
+git log --oneline -- filename.txt
+
+# Show only the most recent commits
+git log -5 filename.txt
+```
+
+### Understanding File History Output
+
+The output shows:
+
+- **Commit information**: Hash, author, date, message
+- **File changes**: What was modified in each commit
+- **Statistics**: Number of lines added/removed
+- **Diff output**: Exact changes made (with --patch)
+
+### File History Best Practices
+
+1. **Use appropriate options**: Choose between --stat and --patch based on your needs
+2. **Filter by date**: Use --since and --until to focus on specific time periods
+3. **Combine with grep**: Search for specific changes in file history
+4. **Use for debugging**: Track down when and why specific changes were made
+
+## Restoring a Deleted File
+
+If you accidentally delete a file, Git makes it easy to restore it from the commit history.
+
+### Finding When a File Was Deleted
+
+```bash
+# Find all commits that touched the file
+git log --oneline filename.txt
+
+# If the filename is ambiguous, use -- separator
+git log --oneline -- filename.txt
+```
+
+### Restoring a Deleted File
+
+```bash
+# Check out the file from the last commit where it existed
+git checkout HEAD~1 -- filename.txt
+
+# Or check out from a specific commit
+git checkout abc123 -- filename.txt
+
+# Commit the restored file
+git add filename.txt
+git commit -m "Restore filename.txt"
+```
+
+### Example Workflow
+
+```bash
+# Accidentally delete a file
+rm important-file.txt
+
+# Commit the deletion (or it happens accidentally)
+git add important-file.txt
+git commit -m "Remove important-file.txt"
+
+# Realize you need the file back
+git log --oneline -- important-file.txt
+
+# Find the last commit where the file existed
+# Check out the file from that commit
+git checkout HEAD~1 -- important-file.txt
+
+# Commit the restoration
+git add important-file.txt
+git commit -m "Restore important-file.txt"
+```
+
+### Restoring Best Practices
+
+1. **Act quickly**: The sooner you restore, the easier it is
+2. **Check the right commit**: Make sure you're restoring from the correct version
+3. **Review the restored file**: Verify it's the version you want
+4. **Use meaningful commit messages**: Explain why you're restoring the file
+
+## Blaming
+
+The `git blame` command shows who wrote each line of code and when, making it easy to track down the author of specific changes.
+
+### Basic Blame
+
+```bash
+# Show blame information for a file
+git blame filename.txt
+
+# Show blame with email addresses
+git blame -e filename.txt
+
+# Show blame for specific lines
+git blame -L 1,10 filename.txt
+```
+
+### Blame Options
+
+```bash
+# Show email addresses instead of names
+git blame -e filename.txt
+
+# Show specific line ranges
+git blame -L 5,15 filename.txt
+
+# Show only the first 10 lines
+git blame -L 1,10 filename.txt
+
+# Show blame for a specific commit
+git blame abc123 filename.txt
+
+# Show full commit hash
+git blame -f filename.txt
+
+# Show line numbers
+git blame -n filename.txt
+
+# Ignore whitespace changes
+git blame -w filename.txt
+```
+
+### Understanding Blame Output
+
+```bash
+abc1234 (John Doe 2024-01-15 10:30:00 +0000 1) function login(username, password) {
+abc1234 (John Doe 2024-01-15 10:30:00 +0000 2)     return validateCredentials(username, password);
+def5678 (Jane Smith 2024-01-16 14:20:00 +0000 3) }
+ghi9012 (John Doe 2024-01-17 09:15:00 +0000 4)
+ghi9012 (John Doe 2024-01-17 09:15:00 +0000 5) function logout() {
+ghi9012 (John Doe 2024-01-17 09:15:00 +0000 6)     clearSession();
+ghi9012 (John Doe 2024-01-17 09:15:00 +0000 7) }
+```
+
+### Blame Best Practices
+
+1. **Use for debugging**: Find who introduced a bug
+2. **Use for code review**: Understand the history of specific lines
+3. **Combine with log**: Get more context about specific commits
+4. **Use line ranges**: Focus on specific parts of large files
+
+## Tagging
+
+Tags are bookmarks that mark specific points in your project's history, typically used for releases and important milestones.
+
+### Creating Tags
+
+```bash
+# Create a lightweight tag (just a pointer)
+git tag v1.0
+
+# Create an annotated tag (with metadata)
+git tag -a v1.1 -m "Release version 1.1"
+
+# Tag a specific commit
+git tag v1.0 abc123
+
+# Create a signed tag (with GPG)
+git tag -s v1.2 -m "Signed release v1.2"
+```
+
+### Types of Tags
+
+#### Lightweight Tags
+
+- Simple pointer to a commit
+- No additional metadata
+- Created with `git tag <name>`
+
+#### Annotated Tags
+
+- Complete Git objects with metadata
+- Include tagger name, email, date, and message
+- Created with `git tag -a <name> -m "<message>"`
+
+#### Signed Tags
+
+- Annotated tags with GPG signature
+- Provide authenticity verification
+- Created with `git tag -s <name> -m "<message>"`
+
+### Working with Tags
+
+```bash
+# List all tags
+git tag
+
+# Show tag details
+git show v1.0
+
+# Check out a tagged commit
+git checkout v1.0
+
+# Delete a tag
+git tag -d v1.0
+```
+
+### Tag Best Practices
+
+1. **Use semantic versioning**: v1.0.0, v2.1.3, etc.
+2. **Use annotated tags for releases**: Include meaningful messages
+3. **Tag important milestones**: Releases, major features, etc.
+4. **Use consistent naming**: Establish a tagging convention for your project
+
+### Example Tagging Workflow
+
+```bash
+# Create a release tag
+git tag -a v1.0.0 -m "Release version 1.0.0"
+
+# Push tags to remote
+git push origin v1.0.0
+
+# Push all tags
+git push origin --tags
+
+# List tags with messages
+git tag -n
+```
+
+### Advanced Tagging
+
+```bash
+# Show tags matching a pattern
+git tag -l "v1.*"
+
+# Show tags sorted by date
+git tag --sort=-committerdate
+
+# Show tags with commit information
+git tag -l --format='%(refname:short) %(committerdate) %(contents:subject)'
+```
 
 <p align="center">
 <img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
@@ -709,7 +2233,7 @@ git clone https://github.com/your-username/forked_repo-name.git
 
 To fix this and keep the forked repository up to date:
 
-2. In the local repository you have a reference to the forked repositrory called `origin`. Add another reference to the original repository called `base`.
+2. In the local repository you have a reference to the forked repository called `origin`. Add another reference to the original repository called `base`.
 
 <p align="center">
 <img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
