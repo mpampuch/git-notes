@@ -1849,6 +1849,8 @@ This tells you:
 git bisect reset
 ```
 
+[This video](https://www.youtube.com/watch?v=capyZ2D9Yz0) provides an excellent demonstration of `git bisect` and how it works.
+
 ### Bisect Best Practices
 
 1. **Have a reliable test**: Make sure you can quickly determine if the bug exists
@@ -2205,7 +2207,11 @@ In this section, we're going to talk about one of the most important and powerfu
 
 ### The Concept of Branching
 
-**Branching** allows us to diverge from the main line of work and work on something else in isolation. Conceptually, you can think of a branch like a separate isolated workspace. So, we have our main workspace, which is called `master` (or `main`), we can have another workspace for working on a new feature in isolation.
+**Branching** allows us to diverge from the main line of work and work on something else in isolation. Conceptually, you can think of a branch like a separate isolated workspace.
+
+![](branching/20250715125613.png)
+
+So, we have our main workspace, which is called `master` (or `main`), we can have another workspace for working on a new feature in isolation.
 
 While we're developing this new feature, our code might become unstable. So, we don't want to release the code in this workspace, we continue working here. When we're done, we test our code, and after we fix all the bugs, then we bring the changes in this workspace into the master. This is called **merging**.
 
@@ -2218,6 +2224,28 @@ The way Git manages branches is very different from many other version control s
 That's why a lot of Subversion users hate branching because it's slow and can waste a lot of disk space.
 
 **Git branches are super fast and cheap** because a branch in Git is just a **pointer to a commit**. So the `master` branch is just a pointer to the last commit in the main line of work. As we make new commits, Git moves this pointer forward automatically. So it knows what is the latest code in the main line of work. That is the snapshot stored in this commit.
+
+When we create a new branch, Git creates a new pointer that can be moved around. This pointer is just a tiny file that contains a 40-byte commit ID. That's why creating a branch in Git is **blazingly fast**.
+
+![](branching/20250715125737.png)
+
+Now, when we switch to this branch and make new commits, Git moves this pointer forward. The `master` pointer stays where it is. So, Git knows the latest code in each branch.
+
+![](branching/20250715125827.png)
+
+When we switch back to `master`, Git takes the snapshot from the commit that `master` points to, and resets our working directory to that snapshot. So we always have a **single working directory**.
+
+![](branching/20250715125834.png)
+
+### The HEAD Pointer
+
+Now, how does Git know which branch we're currently working on? Using a special pointer called **HEAD**. This pointer is also another tiny file that contains the name of a branch, like `master`.
+
+![](branching/20250715125841.png)
+
+When we switch to a different branch, Git moves the HEAD pointer around. So it updates the tiny file and writes the name of the target branch. This is how it can track what branch we're currently working on.
+
+![](branching/20250715125850.png)
 
 <p align="center">
 <img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
