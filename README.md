@@ -4272,11 +4272,16 @@ Pushing uploads your local commits to a remote repository.
 ### Basic Pushing
 
 ```bash
-# Push current branch to origin
-git push
-
-# Push specific branch to origin
+# Push your commits from master to origin
 git push origin master
+
+# --- Shortcut ---
+# Push current branch to origin
+#
+## If you drop origin, git push assumes origin by default
+## If you are on master, don't need to specify it either
+## Can just run to push your commits from master to origin
+git push
 
 # Push to specific remote and branch
 git push <remote> <branch>
@@ -4284,14 +4289,23 @@ git push <remote> <branch>
 
 ### What Push Does
 
-1. **Uploads commits**: Sends local commits that don't exist in remote
-2. **Updates remote branch**: Moves the remote branch pointer forward
+![](pushing/20250718000401.png)
+
+1. **Uploads commits**: Sends local commits that don't exist in remote and updates the remote branch pointer by moving it forward
+
+![](pushing/20250718000418.png)
+
 3. **Updates remote tracking**: Moves `origin/master` to match remote
-4. **Requires authentication**: GitHub credentials or SSH keys needed
+
+![](pushing/20250718000428.png)
+
+Note that pushing **Requires authentication**, so your GitHub credentials or SSH keys.
 
 ### Push Rejection
 
 Push may be rejected if remote has commits you don't have locally:
+
+![](pushing/20250718000558.png)
 
 ```bash
 $ git push
@@ -4308,6 +4322,10 @@ hint: (e.g., 'git pull ...') before pushing again.
 
 **Never use `--force` unless absolutely necessary:**
 
+![](pushing/20250718000609.png)
+
+⚠️ This is essentially telling git to drop someone elses work and replace it with yours.
+
 ```bash
 # ❌ DANGEROUS - overwrites remote history
 git push --force
@@ -4318,21 +4336,21 @@ git pull
 git push
 ```
 
-**Alternative with rebase:**
+**What to do instead?**
 
-```bash
-git pull --rebase
-git push
-```
+1. Pull the work into your own directory to bring other peoples work into your own repository.
 
-### Force Push Warning
+![](pushing/20250718000657.png)
 
-**⚠️ CAUTION**: Force pushing (`git push --force`) is dangerous because it:
+2. Then you have to do a merge or a rebase. If there are any conflicts, you have to resolve them.
 
-- Overwrites remote history
-- Deletes other people's work
-- Can cause data loss
-- Should only be used when you've "screwed things up" and need to fix local history
+![](pushing/20250718000705.png)
+
+3. Then you can do a push.
+
+![](pushing/20250718000729.png)
+
+The final code and the history of both of these repositories is now identical.
 
 ### Best Practices
 
