@@ -170,7 +170,7 @@ Git is the most popular version control system in the world because it's free, o
 
 ## Git Configuration
 
-When using Git for the first time, it’s important to set up a few configuration settings to ensure your environment behaves consistently. These settings help Git associate your commits with your identity, choose the right editor, and handle line endings properly.
+When using Git for the first time, it's important to set up a few configuration settings to ensure your environment behaves consistently. These settings help Git associate your commits with your identity, choose the right editor, and handle line endings properly.
 
 Git settings can be configured at **three levels**:
 
@@ -196,7 +196,7 @@ git config --global user.email your.email@example.com
 
 ### Step 2. **Set Your Default Editor**
 
-If you don’t specify an editor, on Mac, Git uses the system default—like `vim`, which may be unfamiliar.
+If you don't specify an editor, on Mac, Git uses the system default—like `vim`, which may be unfamiliar.
 
 To use **Visual Studio Code**:
 
@@ -205,7 +205,7 @@ git config --global core.editor "code --wait"
 ```
 
 - The `--wait` flag tells Git to pause until you close the VS Code window.
-- Make sure `code` is in your system’s path. If not, follow platform-specific instructions to add it.
+- Make sure `code` is in your system's path. If not, follow platform-specific instructions to add it.
 
 ### Step 3. **Edit Global Git Config File**
 
@@ -215,7 +215,7 @@ All global Git settings are stored in a plain text config file. You can edit it 
 git config --global -e
 ```
 
-This opens the global config file in your default editor (e.g., VS Code). You’ll see:
+This opens the global config file in your default editor (e.g., VS Code). You'll see:
 
 ```ini
 [user]
@@ -799,7 +799,7 @@ This indicates:
 
 ## The .gitignore File
 
-A `.gitignore` file is used to keep a tidy and efficient repository. It tells Git which files or directories to ignore, ensuring that unnecessary clutter—like temporary files, logs, and build artifacts—doesn’t get committed. This not only keeps your repository clean but also improves collaboration by preventing irrelevant files from being shared among team members.
+A `.gitignore` file is used to keep a tidy and efficient repository. It tells Git which files or directories to ignore, ensuring that unnecessary clutter—like temporary files, logs, and build artifacts—doesn't get committed. This not only keeps your repository clean but also improves collaboration by preventing irrelevant files from being shared among team members.
 
 A `.gitignore` file works by specifying patterns for files and directories that Git should ignore when tracking changes.
 
@@ -873,7 +873,7 @@ Step 2. **Pattern Matching**
 
 Step 3. **Effect on Tracking**
 
-- When you run `git add`, Git checks the `.gitignore` file and skips any files or directories that match the specified patterns. This means they won’t be staged for commit or included in your repository.
+- When you run `git add`, Git checks the `.gitignore` file and skips any files or directories that match the specified patterns. This means they won't be staged for commit or included in your repository.
 
 Step 4. **Updating the `.gitignore`**
 
@@ -891,7 +891,7 @@ Step 4. **Updating the `.gitignore`**
 
 - Then, adding the appropriate patterns to your `.gitignore` file will prevent them from being tracked in future commits.
 
-Step 5. **Global `.gitignore`**
+Step 5. **Global `.gitignore**
 
 - You can also set up a global `.gitignore` file that applies to all your repositories. This is useful for ignoring files like OS-specific files or IDE configurations. You can configure it with:
 
@@ -2778,3 +2778,187 @@ git config --global merge.ff false
 ```
 
 This configuration ensures all merges create merge commits, even when fast-forward is possible.
+
+## Viewing Merged Branches
+
+After merging a branch into master, it should be deleted to avoid confusion. Sometimes merged branches remain in the repository, making it difficult to track which branches have been merged.
+
+To view branches that have been merged into the current branch:
+
+```bash
+git branch --merged
+```
+
+**Example output:**
+
+```bash
+$ git branch --merged
+  bugfix/login-form
+  feature/user-authentication
+  hotfix/security-patch
+* master
+```
+
+All listed branches **have been merged** into the current branch and can be safely deleted if work on them is complete.
+
+**Best practice**: Delete branches after merging to prevent confusion and maintain a clean repository.
+
+```bash
+git branch -D bugfix/login-form
+```
+
+To view branches that **have not been merged** into the current branch:
+
+```bash
+git branch --no-merged
+```
+
+**Example output:**
+
+```bash
+$ git branch --no-merged
+  feature/new-dashboard
+  bugfix/payment-issue
+* master
+```
+
+This returns branches containing work that has not been integrated into the current branch.
+
+## Merge Conflicts
+
+Merge conflicts occur when Git cannot automatically merge changes from different branches. Conflicts happen in several scenarios:
+
+- **Same line modified differently**: The same line of code is changed in different ways in two branches
+- **File deleted in one branch**: A file is modified in one branch but deleted in another
+- **Same file added with different content**: The same file is added in two branches with different content
+
+When conflicts occur, Git stops the merge process and requires manual intervention.
+
+### Example: Creating a Merge Conflict
+
+```bash
+# Create a new branch
+git switch -c bugfix/change-password
+
+# Modify a file in the bugfix branch
+echo "change in the bugfix branch" >> change-password.txt
+git add change-password.txt
+git commit -m "Update change-password.txt"
+
+# Switch to master and modify the same file differently
+git switch master
+echo "change in the master branch" >> change-password.txt
+git add change-password.txt
+git commit -m "Update change-password.txt"
+
+# Attempt to merge (creates conflict)
+git merge bugfix/change-password
+```
+
+### Resolving Conflicts
+
+When a merge conflict occurs, Git marks the conflicting areas in the file:
+
+```
+<<<<<<< yours:change-password.txt
+change in the master branch
+=======
+change in the bugfix branch
+>>>>>>> theirs:change-password.txt
+```
+
+**Conflict markers:**
+
+- `<<<<<<< yours:filename`: Start of current branch changes (your side)
+- `=======`: Separator between conflicting changes
+- `>>>>>>> theirs:filename`: End of incoming branch changes (their side)
+
+### Manual Resolution
+
+1. **Open the conflicted file** and locate conflict markers
+2. **Edit the file** to resolve conflicts by:
+   - Keeping changes from one branch
+   - Keeping changes from both branches
+   - Combining changes manually
+3. **Remove conflict markers** completely
+4. **Stage the resolved file**: `git add <filename>`
+5. **Complete the merge**: `git commit`
+
+**Important**: Avoid introducing new code during conflict resolution. The merge commit should only combine existing changes from both branches. Introducing new code during conflict resolution creates what's called an "evil merge" - a merge commit that contains changes not present in either parent branch.
+
+### Using VS Code for Conflict Resolution
+
+VS Code provides built-in conflict resolution options:
+
+- **Accept Current Change**: Keep changes from current branch
+- **Accept Incoming Change**: Keep changes from incoming branch
+- **Accept Both Changes**: Keep changes from both branches
+
+## Visual Merge Tools
+
+For complex conflicts, visual merge tools provide better conflict resolution capabilities than text editors.
+
+### Popular Merge Tools
+
+- **Kdiff3**: Cross-platform merge tool
+- **P4Merge**: Cross-platform merge tool (free from Perforce)
+- **WinMerge**: Windows-only merge tool
+- **GitKraken/IntelliJ**: Built-in merge tools in modern IDEs
+
+### Configuring P4Merge
+
+```bash
+# Set P4Merge as default merge tool
+git config --global merge.tool p4merge
+
+# Configure P4Merge path (Mac)
+git config --global mergetool.p4merge.path "/Applications/p4merge.app/Contents/MacOS/p4merge"
+
+# Configure P4Merge path (Windows)
+git config --global mergetool.p4merge.path "C:/Program Files/p4merge/p4merge.exe"
+```
+
+### Using Visual Merge Tools
+
+```bash
+# Launch merge tool for conflicted files
+git mergetool
+```
+
+**P4Merge interface:**
+
+- **Left panel**: Remote/target branch version (REMOTE)
+- **Middle panel**: Base version (BASE) - common ancestor before branches diverged
+- **Right panel**: Local/current branch version (LOCAL)
+- **Bottom panel**: Combined result (MERGED)
+
+**Resolution options:**
+
+- Click purple icon: Keep remote branch changes
+- Click green icon: Keep local branch changes
+- Hold Shift + click: Keep both changes
+
+## Aborting a Merge
+
+When not ready to resolve conflicts or when merge complications arise, the merge process can be aborted.
+
+```bash
+git merge --abort
+```
+
+This command:
+
+- Returns the repository to the state before the merge began
+- Removes all conflict markers
+- Discards any partial conflict resolutions
+- Restores the working directory to a clean state
+- Applies any autostash entry if present
+
+**Use cases for aborting:**
+
+- Multiple complex conflicts requiring significant time
+- Realizing the merge approach is incorrect
+- Need to gather more information before proceeding
+- Emergency situations requiring immediate rollback
+
+**Note**: If there were uncommitted changes when the merge started, `git merge --abort` may not be able to reconstruct the original state in some cases. It's recommended to commit or stash changes before merging.
