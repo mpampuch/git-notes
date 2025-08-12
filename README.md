@@ -1,5 +1,161 @@
 # git-notes
 
+<p align="center">
+<img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+`--soft`: Removes the commit
+
+<p align="center">
+<img src="resetting/resetting-2.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+`--mixed`: Removes the commit and unstages files
+
+<p align="center">
+<img src="resetting/resetting-3.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+`--hard`: Removes the commit, unstages files, and discards the local changes
+
+<p align="center">
+<img src="resetting/resetting-4.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+## Working on a forked repository
+
+1. Fork a remote repository for an open source project and clone it on your local machine
+
+<p align="center">
+<img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+git clone https://github.com/your-username/forked_repo-name.git
+```
+
+- This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
+
+To fix this and keep the forked repository up to date:
+
+2. In the local repository you have a reference to the forked repository called `origin`. Add another reference to the original repository called `base`.
+
+<p align="center">
+<img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+git remote add base https://github.com/original-owner/repo-name.git
+```
+
+3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
+
+<p align="center">
+<img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+# Fetch the Latest Commits from the Original Repository:
+git fetch base
+# Merge the Changes into Your Local Main Branch:
+git checkout main
+git merge base/main
+# Push the Changes to Your Forked Repository:
+git push origin main
+```
+
+## Collaborative Workflow Best Practices
+
+### Step 1: Check remote directory
+
+A remote is a shared Git repository that allows multiple collaborators to work on the same Git project from different locations.
+To view the remote directory, type
+
+```bash
+git remote -v
+```
+
+If remote directory has never been added to your local directory, use the following command
+
+```bash
+git clone remote_location clone_name
+```
+
+Otherwise, move onto step 2
+
+### Step 2: Fetch changes from the remote
+
+```bash
+git fetch
+```
+
+In Git, the git fetch command downloads objects from the origin remote repository.
+The changes, however, are not merged into the current branch-name branch.
+Instead, they are stored in the origin/branch-name branch, waiting to be merged.
+
+#### Example:
+
+```bash
+git branch -a
+* master
+
+git fetch
+remote: Counting objects: 5, done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 5 (delta 1), reused 0 (delta 0)
+Unpacking objects: 100% (5/5), done.
+From /home/ccuser/workspace/curriculum-a/science-quizzes
+ * [new branch]      master     -> origin/master
+
+git branch -a
+* master
+  remotes/origin/master
+```
+
+In the provided example, using the git branch -a command to see the existing branches, you can see that fetched data has been stored in a new origin/master branch.
+
+### Step 3: Merge changes from the remote
+
+```bash
+git merge origin/branch-name
+```
+
+### Step 4: Create a branch to work on a new project feature and switch over to that branch
+
+```bash
+git branch new-branch
+git switch new-branch
+```
+
+### Step 5: Develop the feature on a branch and commit the work
+
+```bash
+git add files
+git commit -m "message"
+```
+
+### Step 6: Fetch and merge from the remote again (in case new commits were made)
+
+```bash
+git fetch
+git merge origin/branch-name
+```
+
+Steps 2 and 6 are a safeguard against merge conflicts, which occur when two branches contain file changes that cannot be merged with the git merge command.
+
+### Step 7: Push branch up to the remote for review
+
+```bash
+git push origin branch-name
+```
+
+### Step 8: Switch back to main branch and delete new branch (if new feature is fully complete)
+
+```bash
+git switch main
+git branch -D branch-name
+```
+
 ## Git cheatsheets
 
 ![alt text](git-cheatsheet-1.png)
@@ -2203,7 +2359,7 @@ git tag -l --format='%(refname:short) %(committerdate) %(contents:subject)'
 
 ## What are Branches?
 
-In this section, we're going to talk about one of the most important and powerful features of Git called **branching**. It'll talk about how to use branches to diverge from the main line of development, and then work on something else in isolation, how to compare branches to see their differences, how to merge them, we'll talk about different merging techniques, like three way merging, fast forwarding, squash merging, and rebasing. It'll also talk about resolving merge conflicts, undoing a faulty merge, and using essential tools like stashing and cherry picking. Effectively utilizing branching will change the way you develop software.
+**Branching** is one of the most important and powerful features of Git. It enables developers to diverge from the main line of development and work on features in isolation, compare branches to see their differences, merge them using various techniques (three-way merging, fast-forward, squash merging, and rebasing), resolve merge conflicts, undo faulty merges, and use essential tools like stashing and cherry picking. Effectively utilizing branching transforms software development workflows.
 
 ### The Concept of Branching
 
@@ -2211,194 +2367,414 @@ In this section, we're going to talk about one of the most important and powerfu
 
 ![](branching/20250715125613.png)
 
-So, we have our main workspace, which is called `master` (or `main`), we can have another workspace for working on a new feature in isolation.
+The main workspace is called `master` (or `main`), and additional workspaces can be created for working on new features in isolation.
 
-While we're developing this new feature, our code might become unstable. So, we don't want to release the code in this workspace, we continue working here. When we're done, we test our code, and after we fix all the bugs, then we bring the changes in this workspace into the master. This is called **merging**.
+During feature development, code might become unstable. The unstable code remains in the feature workspace until testing is complete and bugs are fixed. Once ready, changes are brought into the master branch through **merging**.
 
-So, branching allows us to work on different work items without messing up with the main line of work. We keep the main line as stable as possible, so we can release it anytime. Also, anyone joining our team can start off on a stable code base.
+Branching enables working on different tasks without affecting the main line of development. The main line remains stable for releases, and new team members can start with a stable codebase.
 
 ### How Git Manages Branches
 
-The way Git manages branches is very different from many other version control systems like Subversion. In Subversion, when we create a new branch, Subversion takes a copy of our entire working directory and stores it somewhere else. What if you have hundreds or thousands of files in our project? All these files have to be copied, and this operation can take a little while.
+Git manages branches differently from many other version control systems like Subversion. In Subversion, creating a new branch requires copying the entire working directory, which can be slow and waste disk space when dealing with hundreds or thousands of files.
 
-That's why a lot of Subversion users hate branching because it's slow and can waste a lot of disk space.
-
-**Git branches are super fast and cheap** because a branch in Git is just a **pointer to a commit**. So the `master` branch is just a pointer to the last commit in the main line of work. As we make new commits, Git moves this pointer forward automatically. So it knows what is the latest code in the main line of work. That is the snapshot stored in this commit.
+**Git branches are fast and efficient** because a branch in Git is just a **pointer to a commit**. The `master` branch points to the last commit in the main line of work. As new commits are made, Git moves this pointer forward automatically, tracking the latest code in the main line of work through the snapshot stored in each commit.
 
 When we create a new branch, Git creates a new pointer that can be moved around. This pointer is just a tiny file that contains a 40-byte commit ID. That's why creating a branch in Git is **blazingly fast**.
 
 ![](branching/20250715125737.png)
 
-Now, when we switch to this branch and make new commits, Git moves this pointer forward. The `master` pointer stays where it is. So, Git knows the latest code in each branch.
+When switching to a branch and making new commits, Git moves this pointer forward while the `master` pointer remains in place. Git tracks the latest code in each branch independently.
 
 ![](branching/20250715125827.png)
 
-When we switch back to `master`, Git takes the snapshot from the commit that `master` points to, and resets our working directory to that snapshot. So we always have a **single working directory**.
+When switching back to `master`, Git takes the snapshot from the commit that `master` points to and resets the working directory to that snapshot, maintaining a **single working directory**.
 
 ![](branching/20250715125834.png)
 
 ### The HEAD Pointer
 
-Now, how does Git know which branch we're currently working on? Using a special pointer called **HEAD**. This pointer is also another tiny file that contains the name of a branch, like `master`.
+Git tracks the current branch using a special pointer called **HEAD**. This pointer is another tiny file containing the name of a branch, like `master`.
 
 ![](branching/20250715125841.png)
 
-When we switch to a different branch, Git moves the HEAD pointer around. So it updates the tiny file and writes the name of the target branch. This is how it can track what branch we're currently working on.
+When switching to a different branch, Git moves the HEAD pointer and updates the tiny file with the name of the target branch, tracking which branch is currently active.
 
 ![](branching/20250715125850.png)
 
-<p align="center">
-<img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
-</p>
+## Working with Branches
 
-`--soft`: Removes the commit
-
-<p align="center">
-<img src="resetting/resetting-2.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-`--mixed`: Removes the commit and unstages files
-
-<p align="center">
-<img src="resetting/resetting-3.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-`--hard`: Removes the commit, unstages files, and discards the local changes
-
-<p align="center">
-<img src="resetting/resetting-4.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-## Working on a forked repository
-
-1. Fork a remote repository for an open source project and clone it on your local machine
-
-<p align="center">
-<img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
+When receiving a bug report, the first step is to create a new branch something called like `bugfix`.
 
 ```bash
-git clone https://github.com/your-username/forked_repo-name.git
+# Create a new branch
+git branch bugfix
+
+# See the list of branches
+git branch
 ```
 
-- This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
+The repository now has two branches: `bugfix` and `master`. The asterisk before `master` indicates the current branch.
 
-To fix this and keep the forked repository up to date:
+The branch information displayed in the terminal comes from zsh with git plugin (Mac) or posh git (Windows). This display clearly shows the current branch.
 
-2. In the local repository you have a reference to the forked repository called `origin`. Add another reference to the original repository called `base`.
+A common issue is accidentally committing code to the wrong branch. The current branch can be verified using `git status`, which displays "On branch master."
 
-<p align="center">
-<img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
+To fix the bug, the current branch must be changed to `bugfix`. There are two ways to do this. Historically, the `checkout` command was used, but it had multiple applications and was confusing. The newer `switch` command is specifically designed for switching branches.
 
 ```bash
-git remote add base https://github.com/original-owner/repo-name.git
+# Switch to the bugfix branch
+git switch bugfix
 ```
 
-3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
-
-<p align="center">
-<img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
+The branch is now switched to `bugfix`. Before proceeding, the branch should be renamed to something more specific, as the current name doesn't indicate which bug is being fixed. With potentially hundreds of bugs to fix, a more descriptive name is beneficial.
 
 ```bash
-# Fetch the Latest Commits from the Original Repository:
-git fetch base
-# Merge the Changes into Your Local Main Branch:
-git checkout main
-git merge base/main
-# Push the Changes to Your Forked Repository:
-git push origin main
+# Rename the branch
+git branch -m bugfix bugfix/signup-form
 ```
 
-## Collaborative Workflow Best Practices
+To rename the branch, use `git branch -m` followed by the old name and new name. A convention like `bugfix/signup-form` can be used, assuming the bug is in the signup form. Forward slashes or hyphens can be used based on personal preference. Branch names cannot contain spaces, control characters, or sequences that have special meaning to Git (like `..` or `~`). The branch is now renamed.
 
-### Step 1: Check remote directory
+To make changes, open `audience.txt` in VS Code or any code editor. Make several changes: rename "audience" to "who this course is for", add a border, and remove a line. These changes represent three types of modifications: addition, modification, and deletion.
 
-A remote is a shared Git repository that allows multiple collaborators to work on the same Git project from different locations.
-To view the remote directory, type
+These changes are not related to fixing a signup form bug, but they demonstrate Git tools and concepts. The branch names, changes made, and commit messages are for educational purposes.
+
+After saving the changes, the terminal shows the working directory is dirty (indicated by the yellow marker). Running `git status` shows the file has been modified but is not staged.
 
 ```bash
-git remote -v
+# Add and commit the changes
+git add audience.txt
+git commit -m "Fix the bug that prevented users from signing up"
 ```
 
-If remote directory has never been added to your local directory, use the following command
+Now examine the log.
 
 ```bash
-git clone remote_location clone_name
+git log --oneline
 ```
 
-Otherwise, move onto step 2
+**Example output:**
 
-### Step 2: Fetch changes from the remote
+```
+abc1234 (HEAD -> bugfix/signup-form) Fix the bug that prevented users from signing up
+def5678 (master) Initial commit
+```
+
+The output shows HEAD pointing to the bugfix branch, indicating the current branch. The latest commit in the bugfix branch is displayed, and below that is the master branch pointer.
+
+The master branch is one commit behind the bugfix branch. Eventually, the bugfix branch will be merged with the master branch to bring it up to date.
+
+The changes made to `audience.txt` are only visible in the bugfix branch. When switching back to the master branch and opening `audience.txt`, the old version of the file is displayed.
 
 ```bash
-git fetch
+# Switch back to master
+git switch master
 ```
 
-In Git, the git fetch command downloads objects from the origin remote repository.
-The changes, however, are not merged into the current branch-name branch.
-Instead, they are stored in the origin/branch-name branch, waiting to be merged.
+Branches enable working on different tasks in isolation. The code in these branches is isolated until they are merged together.
 
-#### Example:
+While on the master branch, the log shows HEAD pointing to the master branch, but the bugfix branch is not visible. Since bugfix is ahead of the master branch, its commits are not listed by default. To view commits across all branches, use the `--all` option.
 
 ```bash
-git branch -a
-* master
-
-git fetch
-remote: Counting objects: 5, done.
-remote: Compressing objects: 100% (5/5), done.
-remote: Total 5 (delta 1), reused 0 (delta 0)
-Unpacking objects: 100% (5/5), done.
-From /home/ccuser/workspace/curriculum-a/science-quizzes
- * [new branch]      master     -> origin/master
-
-git branch -a
-* master
-  remotes/origin/master
+# View commits across all branches
+git log --oneline --all
 ```
 
-In the provided example, using the git branch -a command to see the existing branches, you can see that fetched data has been stored in a new origin/master branch.
+Even while on the master branch, commits from other branches are visible. In this case, the bugfix branch commits are shown.
 
-### Step 3: Merge changes from the remote
+When the bugfix branch is complete and merged into the master branch, it should be deleted.
 
 ```bash
-git merge origin/branch-name
+# Try to delete the branch (will fail if not merged)
+git branch -d bugfix/signup-form
 ```
 
-### Step 4: Create a branch to work on a new project feature and switch over to that branch
+An error occurs: "the branch bugfix is not fully merged." This error appears because there are changes in the bugfix branch that are not merged with the master branch. By default, Git prevents accidental deletion of unmerged branches. If the changes are not needed, force deletion can be used with a capital D.
 
 ```bash
-git branch new-branch
-git switch new-branch
+# Force delete the branch
+git branch -D bugfix/signup-form
 ```
 
-### Step 5: Develop the feature on a branch and commit the work
+This branch will not be deleted now because it will be merged with master later in this section.
+
+## Comparing Branches
+
+When committing to branches, it's important to understand how they diverge from master. This section covers different ways to compare branches.
+
+Currently on master, the bugfix branch will eventually be merged into master. Before merging, it's useful to know what commits will be brought into master.
 
 ```bash
-git add files
-git commit -m "message"
+# Show commits in bugfix branch that are not in master
+git log master..bugfix/signup-form
 ```
 
-### Step 6: Fetch and merge from the remote again (in case new commits were made)
+The command `git log master..bugfix/signup-form` shows all commits that are in the bugfix branch but not in master. Currently there is only a single commit. With more commits, all would be listed here. The `--oneline` option can be used to make the output more concise.
+
+To see actual changes instead of commit lists, use the `diff` tool. The command `git diff` compares master with the bugfix branch.
 
 ```bash
-git fetch
-git merge origin/branch-name
+# Show differences between master and bugfix branch
+git diff master..bugfix/signup-form
 ```
 
-Steps 2 and 6 are a safeguard against merge conflicts, which occur when two branches contain file changes that cannot be merged with the git merge command.
+The command `git diff master..bugfix/signup-form` shows the differences between the two branches. When the bugfix branch is merged into master, `audience.txt` will have these changes: two lines will be removed and replaced with two new lines.
 
-### Step 7: Push branch up to the remote for review
+There's a shorter way to write this command. Since we're currently on master, `master..` can be omitted.
 
 ```bash
-git push origin branch-name
+# Show differences
+git diff master..bugfix/signup-form
+
+# Shorter way to show differences
+git diff bugfix/signup-form
 ```
 
-### Step 8: Switch back to main branch and delete new branch (if new feature is fully complete)
+The command `git diff bugfix/signup-form` shows the differences between the bugfix branch and the current branch (master).
+
+Sometimes only the affected files need to be seen, not the code changes. In those cases, use options from the previous section.
 
 ```bash
-git switch main
-git branch -D branch-name
+# Show only file names that will be affected
+git diff --name-only bugfix/signup-form
+
+# Show file names and status
+git diff --name-status bugfix/signup-form
 ```
+
+Use `--name-only` or `--name-status`. When the bugfix branch is merged into master, `audience.txt` will be modified.
+
+## Stashing
+
+When switching branches, Git resets the working directory to the snapshot stored in the last commit of the target branch. If there are local changes in the working directory that haven't been committed, these changes could be lost. In these situations, Git prevents branch switching. This section demonstrates how this happens and what to do about it.
+
+In the previous example, changes were made to `audience.txt` in the bugfix branch. When on the master branch, modifying `audience.txt` with additional changes (such as adding an asterisk) and saving the file results in a dirty working directory due to uncommitted local changes.
+
+When needing to quickly switch to the bugfix branch while in the middle of work, typing `git switch bugfix/signup-form` produces an error: `your local changes to the following files would be overwritten by checkout. Please commit your changes or stash them before you switch branches.`
+
+Since the changes are not ready to commit, they should be stashed. **Stashing** stores changes in a safe place within the Git repository without making them part of the history.
+
+```bash
+# Stash changes with a message
+git stash push -m "new tax rules"
+```
+
+To use stashing, type `git stash push -m` followed by a message. The message describes what the changes are about, such as "new tax rules" for work on new tax rules that needed to be interrupted to switch to the bugfix branch.
+
+Calling `git stash` without arguments is equivalent to `git stash push`.
+
+The output shows "saved working directory and index state on master" with the message. One stash is now available. By default, new untracked files are not included in the stash. For example, if a new file is created:
+
+```bash
+# Create a new file
+echo "hello" > new-file.txt
+
+# Check status
+git status -s
+```
+
+The new file exists, but if the changes are stashed, this untracked file will not be included by default. To include it, use the `--all` option.
+
+```bash
+# Stash including untracked files
+git stash push --all -m "my new stash"
+```
+
+Use `git stash push --all` (or just `-a`), then `-m`, or combine these options. Give it a meaningful message like "my new stash". Now there are two stashes available.
+
+```bash
+# Shortcut to stash everything with a message
+git stash push -am "meaningful message"
+# Note: git stash save is deprecated in favor of git stash push
+```
+
+```bash
+# List all stashes
+git stash list
+```
+
+To view stashes, use `git stash list`. There are two stashes, each with a unique identifier. `stash@{n}` shows the index in curly braces. The working directory is now clean, allowing switching to the bugfix branch.
+
+After completing work on the bugfix branch, return to master. At this point, apply changes from one of the stashes to the working directory. Before applying, examine the changes to see what code has been modified.
+
+```bash
+# Show what's in a stash
+git stash show stash@{1}
+```
+
+Use `git stash show` followed by the stash name, like `stash@{1}`. This can be shortened to just the sequence number. The output shows one file changed (`audience.txt`) with two changes: one insertion and one deletion.
+
+Apply this stash to the working directory.
+
+```bash
+# Apply a stash
+git stash apply 1
+```
+
+The changes are applied to the working directory. When finished with this stash, remove it to clean up.
+
+### Stash Apply vs Pop
+
+There are two ways to apply stashed changes:
+
+```bash
+# Apply stash but keep it in the stash list
+git stash apply 1
+
+# Apply stash and remove it from the stash list
+git stash pop 1
+```
+
+**Key differences:**
+
+- **`git stash apply`**: Applies the stash but keeps it in the stash list for potential reuse. Unlike `pop`, it can apply any commit that looks like a stash.
+- **`git stash pop`**: Applies the stash and removes it from the stash list (equivalent to `git stash apply && git stash drop`)
+
+**Exception**: If conflicts occur during `git stash pop`, the stash is not removed and behaves like `git stash apply`, allowing you to resolve conflicts before manually dropping the stash.
+
+```bash
+# Remove a specific stash
+git stash drop 1
+```
+
+Use `git stash drop 1` to remove that stash. Check the stash list again. There is one more stash. If it's no longer needed, use `git stash drop 0`, or use `git stash clear` to remove all stashes.
+
+```bash
+# Remove all stashes
+git stash clear
+```
+
+All stashes are removed.
+
+---
+
+## Merging Branches
+
+Merging brings changes from one branch to another. Git supports two types of merges: **fast-forward merges** and **three-way merges**.
+
+### Fast-Forward Merge
+
+When branches have not diverged and there is a direct linear path from the target branch to the source branch, Git performs a fast-forward merge.
+
+**Example scenario:**
+
+- Master branch has three commits
+  ![](merging/8.02.57.png)
+- A new branch called `bugfix` is created, pointing to the same commit as master
+  ![](merging/8.01.58.png)
+- After switching to the bugfix branch and making commits, the changes need to be brought back to master
+  ![](merging/20250715132333.png)
+- Since the branches have not diverged, Git simply moves the master pointer forward to point to the same commit as bugfix
+  ![](merging/20250715132343.png)
+- Now you can delete the bugfix branch, removing the pointer and now you have a clean linear history
+  ![](merging/20250715132446.png)
+
+**Git implementation:**
+Git performs a fast-forward merge by moving the pointer of the source branch forward. After the merge, the bugfix branch can be removed, which eliminates the pointer.
+
+### Three-Way Merge
+
+When branches have diverged, Git cannot perform a fast-forward merge and must create a merge commit.
+
+**Example scenario:**
+
+- Bugfix branch is two commits ahead of master
+  ![](merging/20250715132514.png)
+- Before merging, an additional commit is made to master
+  ![](merging/20250715132528.png)
+- The branches are now **diverged** with changes in master that don't exist in the bugfix branch
+  - Git cannot move the master pointer forward to point to the same commit as bugfix without losing the latest commit in master
+
+**Merge commit creation:**
+Git creates a new commit that combines changes from both branches. This is called a three-way merge because the new commit is based on three different commits:
+
+![](merging/20250715132630.png)
+
+1. The common ancestor of both branches (before code)
+2. The tip of the source branch (after code)
+3. The tip of the target branch (after code)
+
+Git examines three different snapshots (before and after) to determine how to combine the changes, creating a merge commit.
+
+### Summary
+
+Git uses two merge strategies:
+
+- **Fast-forward merge**: When branches have **not diverged**
+- **Three-way merge**: When branches **have diverged**, creating a merge commit
+
+These 2 YouTube Shorts explain the 2 kinds of merges really well:
+
+- [Fast-Forward Merges](https://www.youtube.com/shorts/j1HTNbvBt7E)
+- [3-Way Merges](https://www.youtube.com/shorts/mwnEzFIvR_k)
+
+## Disabling Fast-Forward Merges
+
+Even when fast-forward merges are possible, they can be disabled using the `--no-ff` option. This forces Git to create a merge commit instead of performing a fast-forward merge.
+
+```bash
+# Create and switch to a new branch in one step
+git switch -c bugfix/login-form
+# or use the longer form
+git switch --create bugfix/login-form
+
+# Make changes and commit
+git add table-of-content.txt
+git commit -m "Update table-of-content.txt"
+
+# Switch back to master
+git switch master
+
+# Merge with no fast-forward option
+git merge --no-ff bugfix/login-form
+```
+
+Merge commits offer several advantages:
+
+1. **Feature reversion**: Merge commits make it easier to undo entire features by reverting a single commit
+2. **Historical accuracy**: Merge commits provide a true reflection of when branches were merged
+3. **Simplified rollback**: Reverting a merge commit undoes all changes from that feature branch
+
+### Feature Reversion Example
+
+Consider a scenario with two branches: `master` and `feature`. The branches have not diverged, allowing for a fast-forward merge. However, using `--no-ff` creates a merge commit that combines all changes from the feature branch.
+
+#### With merge commit
+
+- Feature branch contains commits `f1` and `f2`
+- Merge commit combines all changes from `f1` and `f2` into a single commit
+  ![](fast-forward-merging/20250717230247.png)
+- To remove the feature, simply revert the merge commit: `git revert <merge-commit-hash>`
+- This creates a new commit that undoes all changes from the feature branch
+  ![](fast-forward-merging/20250717230303.png)
+
+#### With fast-forward merge
+
+- Master pointer moves to point to the feature branch commits
+  ![](fast-forward-merging/20250717230339.png)
+- To remove the feature, multiple commits must be reverted (`f1` and `f2` individually)
+  ![](fast-forward-merging/20250717230344.png)
+- This process is more complex and error-prone
+
+**Comparison with fast-forward:**
+
+- **Fast-forward merge**: Creates linear history but makes feature removal more complex. Multiple revert operations required, increasing complexity
+- **Merge commit**: Preserves branch history and simplifies feature reversion. Single revert operation removes entire feature
+
+![](fast-forward-merging/20250717230226.png)
+
+The choice between approaches depends on team culture and project requirements.
+
+**Repository configuration:**
+
+Many organizations implement policies requiring merge commits to ensure consistent feature management. To disable fast-forward merges for a repository:
+
+```bash
+# Disable fast-forward for current repository
+git config merge.ff false
+
+# Disable fast-forward globally
+git config --global merge.ff false
+```
+
+This configuration ensures all merges create merge commits, even when fast-forward is possible.
