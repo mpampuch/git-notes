@@ -3105,8 +3105,6 @@ git branch -D bugfix/photo-upload
 
 [This YouTube short](https://www.youtube.com/shorts/SJPJBQWqlrQ) explains squash merging in git very well.
 
----
-
 ## Rebasing
 
 Rebasing is another technique for bringing changes from one branch into another, but unlike merging, it creates a linear history by changing the base of your feature branch.
@@ -3587,6 +3585,10 @@ git show <branch-name>:<file-path>
 - **Review changes**: Always check what changes you're bringing over
 - **Commit appropriately**: Create meaningful commit messages for the restored files
 - **Consider context**: Ensure the file changes make sense in your current branch
+
+## Merging, Squashing, Rebasing
+
+[This video](https://www.youtube.com/watch?v=0chZFIZLR_0) summarizes the differences between the 3 merging techniques very well.
 
 ---
 
@@ -5394,35 +5396,6 @@ jobs:
 - **Test after updates**: Ensure everything still works after syncing
 - **Communicate**: Let maintainers know about major changes
 
-### Using GitHub CLI for Fork Management
-
-GitHub CLI provides tools for managing forks and keeping them up to date:
-
-```bash
-# Fork a repository
-gh repo fork owner/repo
-
-# Sync your fork with upstream
-gh repo sync
-
-# Check fork status
-gh repo view --json forkCount
-
-# View upstream repository
-gh repo view owner/repo
-
-# Compare your fork with upstream
-gh repo compare your-username/repo..owner/repo
-
-# Check if your fork is behind upstream
-gh repo view --json isFork,parent
-
-# Update your fork from upstream
-gh repo sync --force
-```
-
----
-
 ## Rewriting History
 
 One of the great but also dangerous features of Git is that it allows us to rewrite our history. We can drop or modify commits, combine or split them, and so on.
@@ -5461,19 +5434,207 @@ If you have pushed your commits to share your work with others, those commits ar
 - **Before sharing**: Clean up your work before pushing to shared repositories
 - **Feature branches**: When working on personal feature branches that haven't been shared
 
+### Why Rewriting Public History is Problematic
+
+Let's examine what happens when you try to rewrite public history through a detailed example.
+
+#### **Scenario: Modifying a Public Commit**
+
+**Initial State:**
+Both your local and remote repositories have the same history:
+
+![](rewriting-history/20250809142725.png)
+
+**Step 1: Attempting to Modify Commit B**
+When you try to modify commit `B` (which has been pushed), Git creates a new commit `B*` instead of changing the original:
+
+![](rewriting-history/20250809142746.png)
+
+**Why this happens:**
+
+- **Commits in Git are immutable** - once created, they cannot be changed
+- Git creates `B*` as a new commit with your modifications
+- The original `B` remains in Git's database for safety
+- All subsequent commits (`C*`) are also **recreated with new hashes**
+
+#### **Step 2: Attempting to Push**
+
+When you try to push your changes, Git rejects the push:
+
+```bash
+$ git push origin master
+To https://github.com/user/repo.git
+ ! [rejected]        master -> master (non-fast-forward)
+error: failed to push some refs to 'https://github.com/user/repo.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+```
+
+**Why the push is rejected:**
+
+- Your local master branch has diverged from origin/master
+
+- Git detects that you're trying to rewrite history
+
+  ![](rewriting-history/20250809142757.png)
+
+- This is the same scenario as when someone else has pushed changes
+
+#### **Step 3: The Merge Approach (⚠️ Wrong Solution)**
+
+In the case where your push is rejected, first you have to merge the remote branch with the master branch
+
+![](rewriting-history/20250809142819.png)
+
+If you try to merge origin/master into your local master:
+
+```bash
+git pull origin master
+```
+
+This creates a merge commit and results in:
+
+![](rewriting-history/20250809142826.png)
+
+**Problems with this approach:**
+
+- Creates unnecessary merge commit M
+- Keeps both `B` and `B*` in history (noisy)
+- The original goal of cleaning history is defeated
+- **Creates confusing, non-linear history**
+  - These two commits, `B` and `M`, are completely unnecessary
+
+#### **Step 4: The Force Push Approach (⚠️ Also Wrong Solution)** Solution)\*\*
+
+You could use force push to overwrite the remote history:
+
+![](rewriting-history/20250809142915.png)
+
+```bash
+git push --force origin master
+```
+
+This results in:
+
+![](rewriting-history/20250809142945.png)
+
+This looks great because now we have a simple linear history, but there are a lot of problems with this and you should **never force pushing into a public repository**
+
+**Problems with force push:**
+
+- **Collaborator issues**: Other developers who have based work on the original commits will have problems
+- **Lost work**: Original commits `B` and `C` are no longer accessible
+- **Confusion**: Team members won't understand what happened
+
+#### **The John Scenario: Impact on Collaborators**
+
+Imagine John has the original repository state:
+
+![](rewriting-history/7.19.27.png)
+
+**After your force push, John's situation:**
+
+1. John adds a new commit `C` on top of `B`
+   ![](rewriting-history/20250809143002.png)
+2. John tries to push: `git push origin master`
+   ![](rewriting-history/20250809143010.png)
+3. Push is rejected because John's history diverges from the new remote history
+
+```bash
+$ git push origin master
+To https://github.com/user/repo.git
+ ! [rejected]        master -> master (non-fast-forward)
+```
+
+John must **pull the new forced commit**
+
+```bash
+$ git pull origin master
+```
+
+![](rewriting-history/20250809143057.png)
+
+John then must merge the new commit. **This creates another merge commit and noisy history**.
+
+**Result for John:**
+
+![](rewriting-history/20250809143108.png)
+
+**The cascade effect:**
+
+- John now has a confusing history with merge commits
+- The original goal of clean history is completely defeated
+- Multiple team members will have similar problems
+- The repository becomes harder to understand and maintain
+
+### The Correct Approach: Private History Rewriting
+
+**Scenario: Modifying a Private Commit**
+
+When you have a commit that hasn't been pushed yet:
+
+```
+A --- B --- C (local master, origin/master)
+           \
+            D (new private commit)
+```
+
+**Safe to rewrite because:**
+
+- Commit `D` only exists in your local repository
+- No one else has based work on it
+- You can modify, reword, or drop it without affecting others
+
+**Example operations:**
+
+```bash
+# Amend the commit message
+git commit --amend -m "Better commit message"
+
+# Drop the commit entirely
+git reset --hard HEAD~1
+
+# Split the commit
+git reset --soft HEAD~1
+git add file1.txt
+git commit -m "First part of the change"
+git add file2.txt
+git commit -m "Second part of the change"
+```
+
+### Key Takeaways
+
+1. **Public commits are immutable**: Once pushed, commits become part of shared history
+2. **Force push creates problems**: It disrupts collaboration and creates confusion
+3. **Merge approach defeats the purpose**: Creates noisy history instead of clean history
+4. **Private history is safe to rewrite**: No one else is affected
+5. **Clean before sharing**: Always clean up your history before pushing to shared repositories
+
+### Best Practices Summary
+
+- ✅ **Rewrite private history** before pushing
+- ✅ **Use meaningful commit messages** from the start
+- ✅ **Test your changes** before sharing
+- ❌ **Never force push** to shared branches
+- ❌ **Don't rewrite commits** that others might have based work on
+- ❌ **Avoid rewriting** commits that have been in public repositories for any time
+
 ## Example of Bad History
 
-Consider a repository with these problematic commits:
+Consider a repository with these problematic commit:
 
-- "render restaurants the map" (missing word "on")
-- "fix a typo" (unnecessary noise)
-- "change the color of restaurant icons" (part of same unit of work)
-- "add a reference to google map SDK" (wrong position in history)
-- "wip" (work in progress - meaningless)
-- "update terms of service and google map SDK" (unrelated changes)
+![](history/20250809143223.png)
+
 - "." (mysterious message)
+- "update terms of service and google map SDK" (unrelated changes)
+- "wip" (work in progress - meaningless)
+- "add a reference to google map SDK" (wrong position in history)
+- "change the color of restaurant icons" (part of same unit of work)
+- "fix a typo" (unnecessary noise)
+- "render restaurants the map" (missing word "on")
 
-These commits create a confusing, noisy history that doesn't tell a clear story.
+These commits create a confusing, noisy history that doesn't tell a clear story. This kind of history should be cleaned before pushing to a public repository.
 
 ## Undoing Commits
 
@@ -6101,6 +6262,28 @@ git commit --amend
 git rebase --continue
 ```
 
+### Always Keep in mind: **Rebasing alters history**
+
+Whenever you change the base of a commit, you are creating new copies of a commit. This cascades for all commits that come after the commit you are rebasing:
+
+Example:
+
+- If this is your directory structure
+
+![](amending-an-earlier-commit/20250809144446.png)
+
+- and you ammend commit `B` with rebasing
+
+![](amending-an-earlier-commit/20250809144454.png)
+
+- Copies of your commits `C` and `D` will be created too.
+
+![](amending-an-earlier-commit/20250809144514.png)
+
+- In the end, although it looks similar to your starting history, most of your commits in your linear history will now be new.
+
+![](amending-an-earlier-commit/20250809144523.png)
+
 ### Best Practices for Interactive Rebase
 
 1. **Always work on a backup branch** before major rebasing
@@ -6138,3 +6321,11 @@ gh repo view --json updatedAt
 ```
 
 **Note:** Most history rewriting operations are performed with Git commands rather than GitHub CLI, as they operate on local repository state.
+
+## Example of Good History
+
+With the tools described above, its recommended to turn the history from the bad example into something like this:
+
+![](history/20250809145650.png)
+
+This history is clean and meaningful, and each commit delineates a different, logical unit of work that was performed while working on the project.
