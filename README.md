@@ -617,13 +617,13 @@ git commit -am "Fix the bug that prevented users from signing up"
 
 > **⚠️ CAUTION**: Only use this when you're 100% sure your changes don't need review. The staging area exists for a reason - to let you review changes before committing. **99% of the time, you should stage your code before committing**.
 
-### When to Use Quick Commits
+### ✅ When to Use Quick Commits
 
 - **Simple, obvious changes**: Minor fixes or typo corrections
 - **Single file modifications**: When you're only changing one file
 - **Confident changes**: When you're certain the changes are correct
 
-### When to Avoid Quick Commits
+### ❌ When to Avoid Quick Commits
 
 - **Multiple file changes**: Always review when touching multiple files
 - **Complex changes**: Any significant modifications should be staged and reviewed
@@ -3017,7 +3017,7 @@ git revert -m 1 HEAD
 - Parent 1 is typically the branch you were on when merging (e.g., master)
 - Parent 2 is the branch being merged in
 
-### When to Use Each Approach
+### ✅ When to Use Each Approach
 
 **Use `git reset` when:**
 
@@ -3053,7 +3053,7 @@ git merge feature-branch
 
 Squash merging combines all changes from a feature branch into a single commit on the target branch, creating a clean, linear history without preserving the individual commits from the source branch.
 
-### When to Use Squash Merging
+### ✅ When to Use Squash Merging
 
 Squash merging is ideal for:
 
@@ -3204,7 +3204,7 @@ git commit -m "Fix the bug on the photo upload page"
 - **Better readability**: Easier to understand the overall change
 - **Simplified rollback**: Single commit to revert if needed
 
-### When NOT to Use Squash Merging
+### ❌ When NOT to Use Squash Merging
 
 - **Preserving history**: When individual commits are meaningful and should be preserved
 - **Collaborative branches**: When multiple developers work on the same branch
@@ -3238,3 +3238,316 @@ git branch -D bugfix/photo-upload
 **Result**: A single commit on master that combines all changes from the bugfix branch, creating a clean linear history.
 
 [This YouTube short](https://www.youtube.com/shorts/SJPJBQWqlrQ) explains squash merging in git very well.
+
+---
+
+## Rebasing
+
+Rebasing is another technique for bringing changes from one branch into another, but unlike merging, it creates a linear history by changing the base of your feature branch.
+
+### What is Rebasing?
+
+Rebasing **moves the base** of your feature branch to a different commit, typically the latest commit on the target branch. This creates a linear history where your feature commits appear to have been made on top of the latest target branch commit.
+
+**Before rebasing:**
+
+```
+A---B---C feature
+     \
+      D---E master
+```
+
+**After rebasing:**
+
+```
+A---B---D---E---C' feature
+```
+
+### ✅ When to Use Rebasing
+
+Rebasing is ideal for:
+
+- **Creating linear history**: When you want a clean, straight-line commit history
+- **Local branches**: When working on personal feature branches that haven't been shared
+- **Preparing for merge**: When you want to ensure a fast-forward merge
+- **Cleaning up commits**: When you want to reorganize or clean up your commit history
+
+### ⚠️ Important Warning
+
+![](rebasing/20250717233312.png)
+
+**Rebasing rewrites history** by creating new commits with the same changes but different commit hashes. This means:
+
+- **Only use on local branches**: Never rebase commits that have been pushed to a shared repository
+- **Never rebase shared history**: If others have based work on your commits, rebasing will break their history
+- **Use with caution**: Rebasing can cause confusion and data loss if used incorrectly
+
+### How Rebasing Works
+
+#### The Process
+
+1. **Identify the base**: Git finds the common ancestor of your feature branch and the target branch
+
+   ![](rebasing/20250717233119.png)
+
+2. **Create new commits**: Git creates new commits with the same changes but based on the target branch
+
+   ![](rebasing/20250717233329.png)
+
+3. **Move the branch pointer**: The feature branch pointer moves to point to the new commits
+
+   ![](rebasing/20250717233336.png)
+
+4. **Clean up old commits**: The original commits become orphaned and will be garbage collected
+
+   ![](rebasing/20250717233304.png)
+
+Now you have a nice clean linear history.
+
+Remember that while it looks like all you did was move the feature commits (`F1` and `F2`) to a new base, these are not the original commits. These are **new commits** (`F1*` and `F2*`). Rebasing alters the history and should never be done on a code that's already in a public repository.
+
+#### Example Workflow
+
+```bash
+# Create a feature branch
+git switch -c feature/shopping-cart
+
+# Make some commits
+echo "hello" > cart.txt
+git add cart.txt
+git commit -m "Add cart.txt"
+
+# Switch to master and make changes
+git switch master
+echo "hello" > table-of-content.txt
+git add table-of-content.txt
+git commit -m "Update table of content"
+
+# Switch back to feature branch and rebase
+git switch feature/shopping-cart
+git rebase master
+```
+
+### Performing a Rebase
+
+```bash
+# Basic rebase command
+git rebase master
+
+# Rebase onto a specific commit
+git rebase <commit-hash>
+
+# Interactive rebase (for editing commits)
+git rebase -i master
+```
+
+### Conflict Resolution During Rebase
+
+When conflicts occur during rebasing, Git stops the process and allows you to resolve them:
+
+#### Resolving Conflicts
+
+```bash
+# Start rebase
+git rebase master
+
+# If conflicts occur, resolve them using your preferred method
+git mergetool
+# or manually edit conflicted files
+
+# Stage resolved files
+git add .
+
+# Continue the rebase
+git rebase --continue
+```
+
+#### Rebase Options During Conflicts
+
+When in the middle of a rebase with conflicts, you have several options:
+
+```bash
+# Continue after resolving conflicts
+git rebase --continue
+
+# Skip the current commit (if you don't want it)
+git rebase --skip
+
+# Abort the entire rebase and return to original state
+git rebase --abort
+```
+
+### Interactive Rebasing
+
+Interactive rebasing allows you to modify commits during the rebase process:
+
+```bash
+# Start interactive rebase
+git rebase -i master
+```
+
+**Available commands:**
+
+- `pick`: Use the commit as-is
+- `reword`: Use the commit but edit the commit message
+- `edit`: Use the commit but stop for amending
+- `squash`: Use the commit but meld into the previous commit
+- `fixup`: Like squash, but discard the commit message
+- `drop`: Remove the commit entirely
+
+### Rebase vs Merge
+
+| Aspect            | Rebase           | Merge             |
+| ----------------- | ---------------- | ----------------- |
+| **History**       | Linear           | Branching         |
+| **Commit hashes** | New              | Preserved         |
+| **Safety**        | Rewrites history | Preserves history |
+| **Use case**      | Local branches   | Shared branches   |
+| **Result**        | Clean timeline   | Merge commits     |
+
+### Best Practices
+
+#### ✅ When to Rebase
+
+- **Local feature branches**: Before merging into main
+- **Cleaning up commits**: Before sharing your work
+- **Keeping up with main**: Regularly rebase your feature branch
+- **Preparing for pull requests**: Clean up your commit history
+
+#### ❌ When NOT to Rebase
+
+- **Shared branches**: Never rebase commits that others have pulled
+- **Public repositories**: Don't rebase commits that have been pushed
+- **Collaborative branches**: When multiple people work on the same branch
+- **Release branches**: Don't rebase stable release branches
+
+### Common Rebase Scenarios
+
+#### Keeping Your Branch Up to Date
+
+```bash
+# Switch to your feature branch
+git switch feature/my-feature
+
+# Rebase on the latest main
+git rebase main
+
+# Push the rebased branch (force push required)
+git push --force-with-lease origin feature/my-feature
+```
+
+#### Cleaning Up Commits Before Merging
+
+```bash
+# Interactive rebase to clean up commits
+git rebase -i main
+
+# After cleaning up, merge
+git switch main
+git merge feature/my-feature
+```
+
+### Troubleshooting Rebase
+
+#### Aborting a Rebase
+
+If you get stuck or want to start over:
+
+```bash
+git rebase --abort
+```
+
+This returns your branch to its state before the rebase began.
+
+#### Recovering from a Failed Rebase
+
+If a rebase fails and you're not sure what to do:
+
+```bash
+# Check the current status
+git status
+
+# Either continue, skip, or abort
+git rebase --continue
+git rebase --skip
+git rebase --abort
+```
+
+#### Force Pushing After Rebase
+
+After rebasing, you'll need to force push to update the remote branch:
+
+```bash
+# Safe force push (recommended)
+git push --force-with-lease origin feature/branch-name
+
+# Regular force push (use with caution)
+git push --force origin feature/branch-name
+```
+
+### Merge Tool Backup Files
+
+When using merge tools during rebase, backup files may be created:
+
+```bash
+# Remove backup files created by merge tools
+rm *.orig
+
+# Or use git clean (be careful!)
+git clean -f
+
+# Prevent future backup files
+git config --global mergetool.keepBackup false
+```
+
+### Example: Complete Rebase Workflow
+
+```bash
+# 1. Create and work on a feature branch
+git switch -c feature/shopping-cart
+echo "Add shopping cart functionality" > cart.js
+git add cart.js
+git commit -m "Add shopping cart"
+
+echo "Implement checkout process" >> cart.js
+git add cart.js
+git commit -m "Add checkout functionality"
+
+# 2. Meanwhile, main branch has new commits
+git switch main
+echo "Update documentation" > README.md
+git add README.md
+git commit -m "Update README"
+
+# 3. Rebase feature branch on main
+git switch feature/shopping-cart
+git rebase main
+
+# 4. If conflicts occur, resolve them
+# Edit conflicted files, then:
+git add .
+git rebase --continue
+
+# 5. Merge the rebased branch
+git switch main
+git merge feature/shopping-cart
+
+# 6. Clean up
+git branch -d feature/shopping-cart
+```
+
+**Result**: A clean, linear history with your feature commits appearing as if they were made on top of the latest main branch commits.
+
+### Summary
+
+Rebasing is a powerful tool for creating clean, linear history, but it comes with the responsibility of understanding when and how to use it safely. Always remember:
+
+- **Rebasing rewrites history** - use only on local branches
+- **Never rebase shared commits** - it will break other people's work
+- **Use interactive rebase** to clean up commits before sharing
+- **Force push carefully** after rebasing
+- **When in doubt, use merge instead** - it's safer for shared history
+
+Rebasing is excellent for maintaining a clean project history, but it requires discipline and understanding of Git's history model to use effectively.
+
+[This YouTube short](https://www.youtube.com/shorts/nzv0sbfprJo) explains rebasing in git very well.
