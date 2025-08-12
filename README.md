@@ -1,47 +1,5 @@
 # git-notes
 
-## Working on a forked repository
-
-1. Fork a remote repository for an open source project and clone it on your local machine
-
-<p align="center">
-<img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
-
-```bash
-git clone https://github.com/your-username/forked_repo-name.git
-```
-
-- This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
-
-To fix this and keep the forked repository up to date:
-
-2. In the local repository you have a reference to the forked repository called `origin`. Add another reference to the original repository called `base`.
-
-<p align="center">
-<img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
-
-```bash
-git remote add base https://github.com/original-owner/repo-name.git
-```
-
-3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
-
-<p align="center">
-<img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
-</p>
-
-```bash
-# Fetch the Latest Commits from the Original Repository:
-git fetch base
-# Merge the Changes into Your Local Main Branch:
-git checkout main
-git merge base/main
-# Push the Changes to Your Forked Repository:
-git push origin main
-```
-
 ## Git cheatsheets
 
 ![alt text](git-cheatsheet-1.png)
@@ -761,7 +719,7 @@ Step 3. **Effect on Tracking**
 
 - When you run `git add`, Git checks the `.gitignore` file and skips any files or directories that match the specified patterns. This means they won't be staged for commit or included in your repository.
 
-Step 4. **Updating the `.gitignore`**
+Step 4. **Updating the `.gitignore**
 
 - If you add new files or directories that you want to ignore after the initial commit, you may need to remove them from tracking using, because `.gitignore` only ignores files and directories in git that you haven't already included in your directory or repository. So if you accidentally include a file in your git repository and then later add it to `.gitignore`, git **is not** going to ignore that. To stop this problem, you have to remove this file from the staging area, which is what you're proposing for the next commit. To see the files in your directory, you can use:
 
@@ -4099,6 +4057,21 @@ git merge origin/master
 - **Selective integration**: Choose which remote changes to include
 - **Safe operation**: No risk of conflicts or unwanted merges
 
+### Using GitHub CLI for Fetching
+
+GitHub CLI provides enhanced fetching capabilities with additional context:
+
+```bash
+# Fetch and show detailed information about new commits
+gh repo sync
+
+# Fetch and show what's new in the repository
+gh repo view --web
+
+# Fetch and show recent activity
+gh repo view --json recentCommits
+```
+
 ## Pulling
 
 Pulling combines fetching and merging to bring remote changes into your current branch.
@@ -4172,6 +4145,21 @@ If conflicts occur during pull:
 - **Choose strategy**: Decide between merge and rebase based on team preferences
 - **Resolve conflicts carefully**: Ensure all conflicts are properly resolved
 - **Test after pull**: Verify that your code still works after integration
+
+### Using GitHub CLI for Pulling
+
+GitHub CLI can enhance the pulling experience with additional context:
+
+```bash
+# Pull and show repository status
+gh repo sync
+
+# Pull and open repository in browser
+gh repo view --web
+
+# Pull and show recent activity
+gh repo view --json recentCommits
+```
 
 ## Pushing
 
@@ -4268,6 +4256,24 @@ The final code and the history of both of these repositories is now identical.
 - **Use feature branches**: Push to feature branches before merging to main
 - **Communicate with team**: Let others know when you're pushing major changes
 
+### Using GitHub CLI for Pushing
+
+GitHub CLI provides enhanced pushing capabilities with better feedback:
+
+```bash
+# Push and show repository status
+gh repo sync
+
+# Push and open the repository in browser
+gh repo view --web
+
+# Push and show recent commits
+gh repo view --json recentCommits
+
+# Push and create a release (if applicable)
+gh release create v1.0.0 --generate-notes
+```
+
 ## Collaborative Workflow Best Practices
 
 Here I have old notes I made on best practices for git collaboration. It avoids using `pull` and opts for `fetch` only instead, but either or can work. Just be aware of dealing with merge conflicts right away when pulling.
@@ -4362,8 +4368,6 @@ git switch main
 git branch -D branch-name
 ```
 
----
-
 ## Storing Credentials
 
 Entering GitHub credentials every time you push is tedious and time-consuming. Git provides ways to store credentials in memory or on disk.
@@ -4406,7 +4410,26 @@ git config --global credential.helper manager
 - **Automatic authentication**: No need to enter credentials repeatedly
 - **Cross-application**: Works with other Git tools and applications
 
----
+### Using GitHub CLI for Credential Management
+
+GitHub CLI provides seamless authentication and credential management:
+
+```bash
+# Login to GitHub (handles credentials automatically)
+gh auth login
+
+# Check authentication status
+gh auth status
+
+# Switch between accounts
+gh auth switch
+
+# Logout from current account
+gh auth logout
+
+# Configure Git to use GitHub CLI for authentication
+gh auth setup-git
+```
 
 ## Sharing Tags
 
@@ -4454,7 +4477,26 @@ git push origin --delete v1.0
 git tag -d v1.0
 ```
 
----
+### Using GitHub CLI for Tag Management
+
+GitHub CLI provides enhanced tag management capabilities:
+
+```bash
+# Create and push a tag in one command
+gh release create v1.0.0 --generate-notes
+
+# List all tags with additional information
+gh release list
+
+# View tag details
+gh release view v1.0.0
+
+# Delete a tag from GitHub
+gh release delete v1.0.0
+
+# Create a draft release
+gh release create v1.0.0 --draft --generate-notes
+```
 
 ## Releases
 
@@ -4502,7 +4544,35 @@ GitHub Releases provide a way to package software along with source code, binary
 - Updated documentation
 ```
 
----
+### Using GitHub CLI for Releases
+
+GitHub CLI provides powerful release management capabilities:
+
+```bash
+# Create a release with auto-generated notes
+gh release create v1.0.0 --generate-notes
+
+# Create a release with custom notes
+gh release create v1.0.0 --notes "Bug fixes and improvements"
+
+# Create a draft release
+gh release create v1.0.0 --draft --generate-notes
+
+# Upload assets to a release
+gh release upload v1.0.0 file.zip
+
+# List all releases
+gh release list
+
+# View release details
+gh release view v1.0.0
+
+# Edit an existing release
+gh release edit v1.0.0 --notes "Updated release notes"
+
+# Delete a release
+gh release delete v1.0.0
+```
 
 ## Sharing Branches
 
@@ -4556,7 +4626,26 @@ git branch -d feature/change-password
 git remote prune origin
 ```
 
----
+### Using GitHub CLI for Branch Management
+
+GitHub CLI provides enhanced branch management capabilities:
+
+```bash
+# Create a new branch and push it
+gh repo create-branch feature/new-feature
+
+# List all branches with additional information
+gh repo view --json branches
+
+# View branch details
+gh repo view --json branches --jq '.branches[] | select(.name == "main")'
+
+# Delete a branch from GitHub
+gh repo delete-branch feature/old-feature
+
+# Compare branches
+gh repo compare main..feature/new-feature
+```
 
 ## Collaboration Workflow
 
@@ -4623,7 +4712,26 @@ git branch -d feature/change-password
 git remote prune origin
 ```
 
----
+### Using GitHub CLI for Collaboration Workflow
+
+GitHub CLI streamlines the collaboration workflow:
+
+```bash
+# Create a new branch and switch to it
+gh repo create-branch feature/new-feature
+
+# View repository status and recent activity
+gh repo view --web
+
+# Check repository health and status
+gh repo view --json healthCheck
+
+# Sync repository with remote
+gh repo sync
+
+# View recent commits and activity
+gh repo view --json recentCommits
+```
 
 ## Pull Requests
 
@@ -4684,7 +4792,41 @@ Pull requests enable team discussion before merging branches into master.
 - **Author merge**: Some teams allow PR author to merge
 - **Review approval**: Require approval before merging
 
----
+### Using GitHub CLI for Pull Requests
+
+GitHub CLI provides powerful pull request management:
+
+```bash
+# Create a pull request
+gh pr create --title "Add new feature" --body "This PR adds..."
+
+# List all pull requests
+gh pr list
+
+# View pull request details
+gh pr view 123
+
+# Check out a pull request locally
+gh pr checkout 123
+
+# Review a pull request
+gh pr review 123 --approve --body "Looks good!"
+
+# Merge a pull request
+gh pr merge 123 --merge
+
+# Close a pull request
+gh pr close 123
+
+# Reopen a closed pull request
+gh pr reopen 123
+
+# Add reviewers to a pull request
+gh pr edit 123 --add-reviewer username1,username2
+
+# Add labels to a pull request
+gh pr edit 123 --add-label "bug,urgent"
+```
 
 ## Resolving Pull Requests with Conflicts
 
@@ -4736,7 +4878,26 @@ git push
 - **Document decisions**: Explain why certain changes were chosen
 - **Review carefully**: Double-check conflict resolution
 
----
+### Using GitHub CLI for Conflict Resolution
+
+GitHub CLI can help with conflict resolution workflow:
+
+```bash
+# Check out a pull request with conflicts
+gh pr checkout 123
+
+# View pull request status and conflicts
+gh pr view 123 --json mergeStateStatus
+
+# After resolving conflicts, push changes
+git push
+
+# Update pull request status
+gh pr view 123
+
+# Merge pull request after conflict resolution
+gh pr merge 123 --merge
+```
 
 ## GitHub Issues
 
@@ -4810,7 +4971,41 @@ If applicable, add screenshots.
 - **Assign users**: Assign multiple issues
 - **Close issues**: Close multiple issues
 
----
+### Using GitHub CLI for Issues
+
+GitHub CLI provides comprehensive issue management:
+
+```bash
+# Create an issue
+gh issue create --title "Bug report" --body "Description of the bug"
+
+# List all issues
+gh issue list
+
+# View issue details
+gh issue view 123
+
+# Edit an issue
+gh issue edit 123 --title "Updated title" --body "Updated description"
+
+# Close an issue
+gh issue close 123
+
+# Reopen a closed issue
+gh issue reopen 123
+
+# Add labels to an issue
+gh issue edit 123 --add-label "bug,urgent"
+
+# Assign users to an issue
+gh issue edit 123 --add-assignee username1,username2
+
+# Add comments to an issue
+gh issue comment 123 --body "This is a comment"
+
+# List comments on an issue
+gh issue view 123 --json comments
+```
 
 ## GitHub Labels
 
@@ -4852,7 +5047,32 @@ GitHub provides default labels for every repository:
 - **Filter by labels**: Find issues/PRs with specific labels
 - **Label reports**: See count of issues per label
 
----
+### Using GitHub CLI for Labels
+
+GitHub CLI provides label management capabilities:
+
+```bash
+# List all labels in a repository
+gh label list
+
+# Create a new label
+gh label create "new-feature" --description "New feature requests" --color "0366d6"
+
+# Edit an existing label
+gh label edit "bug" --description "Updated description" --color "d73a4a"
+
+# Delete a label
+gh label delete "old-label"
+
+# View label details
+gh label view "bug"
+
+# List issues with a specific label
+gh issue list --label "bug"
+
+# Add labels to multiple issues
+gh issue edit 123 --add-label "urgent,high-priority"
+```
 
 ## GitHub Milestones
 
@@ -4896,7 +5116,29 @@ Milestones help track progress on groups of issues and pull requests.
 - **Regular updates**: Update progress regularly
 - **Team communication**: Keep team informed of progress
 
----
+### Using GitHub CLI for Milestones
+
+GitHub CLI provides milestone management capabilities:
+
+```bash
+# List all milestones
+gh api repos/:owner/:repo/milestones
+
+# Create a new milestone
+gh api repos/:owner/:repo/milestones -f title="Version 2.0" -f description="Major release" -f due_on="2024-12-31"
+
+# View milestone details
+gh api repos/:owner/:repo/milestones/:milestone_number
+
+# Add issues to a milestone
+gh issue edit 123 --milestone "Version 2.0"
+
+# List issues in a milestone
+gh issue list --milestone "Version 2.0"
+
+# Close a milestone
+gh api repos/:owner/:repo/milestones/:milestone_number -f state="closed"
+```
 
 ## Contributing to an Open-Source Project
 
@@ -4953,7 +5195,32 @@ git push -u origin bug-fix
 - **Follow guidelines**: Check project's contributing guidelines
 - **Test thoroughly**: Ensure your changes work correctly
 
----
+### Using GitHub CLI for Open Source Contributions
+
+GitHub CLI streamlines the open source contribution workflow:
+
+```bash
+# Fork a repository
+gh repo fork owner/repo
+
+# Clone your fork
+gh repo clone your-username/repo
+
+# Create a pull request from your fork
+gh pr create --repo owner/repo --title "Fix bug" --body "This PR fixes..."
+
+# Check pull request status
+gh pr status
+
+# View pull request in browser
+gh pr view --web
+
+# Add comments to your pull request
+gh pr comment 123 --body "Updated based on feedback"
+
+# Check if your PR is ready to merge
+gh pr checks 123
+```
 
 ## Keeping a Fork Up to Date
 
@@ -5007,6 +5274,96 @@ git commit -m "Resolve merge conflicts"
 git push origin feature-branch
 ```
 
+## Working on a forked repository
+
+1. Fork a remote repository for an open source project and clone it on your local machine
+
+<p align="center">
+<img src="forking/forking-1.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+git clone https://github.com/your-username/forked_repo-name.git
+```
+
+- This forked repository is not connected to the original repository, so from time to time, it can become out of sync with the original repository. If other people contribute to the base repository and add new commits to the main branch, you are not going to be aware of those new commits.
+
+To fix this and keep the forked repository up to date:
+
+2. In the local repository you have a reference to the forked repository called `origin`. Add another reference to the original repository called `base`.
+
+<p align="center">
+<img src="forking/forking-2.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+git remote add base https://github.com/original-owner/repo-name.git
+```
+
+3. Pull the commits from the `base` repository and then push them to the forked (`origin`) repositroy.
+
+<p align="center">
+<img src="forking/forking-3.png" alt="Working On Open Source Projects" style="width:60%;">
+</p>
+
+```bash
+# Fetch the Latest Commits from the Original Repository:
+git fetch base
+# Merge the Changes into Your Local Main Branch:
+git checkout main
+git merge base/main
+# Push the Changes to Your Forked Repository:
+git push origin main
+```
+
+### Using GitHub CLI for Fork Management
+
+GitHub CLI provides streamlined commands for managing forked repositories:
+
+```bash
+# Fork a repository directly from GitHub
+gh repo fork original-owner/repo-name
+
+# Clone your forked repository
+gh repo clone your-username/repo-name
+
+# Check the status of your fork
+gh repo view --json isFork,parent
+
+# Sync your fork with the upstream repository
+gh repo sync
+
+# View differences between your fork and upstream
+gh repo compare your-username/repo-name..original-owner/repo-name
+
+# Check if your fork is behind upstream
+gh repo view original-owner/repo-name --json updatedAt
+
+# Force sync your fork (if needed)
+gh repo sync --force
+```
+
+### Simplified Workflow with GitHub CLI
+
+Instead of manually managing remotes, GitHub CLI can handle the fork workflow more efficiently:
+
+```bash
+# 1. Fork and clone in one step
+gh repo fork original-owner/repo-name --clone=true
+
+# 2. Navigate to the cloned repository
+cd repo-name
+
+# 3. Sync with upstream (equivalent to fetch + merge + push)
+gh repo sync
+
+# 4. Create a feature branch for your changes
+gh repo create-branch feature/your-feature
+
+# 5. After making changes, create a pull request
+gh pr create --repo original-owner/repo-name --title "Your feature" --body "Description"
+```
+
 ### Automated Updates
 
 **GitHub Actions**: Create workflow to automatically sync fork:
@@ -5036,3 +5393,748 @@ jobs:
 - **Separate branches**: Work on features in separate branches
 - **Test after updates**: Ensure everything still works after syncing
 - **Communicate**: Let maintainers know about major changes
+
+### Using GitHub CLI for Fork Management
+
+GitHub CLI provides tools for managing forks and keeping them up to date:
+
+```bash
+# Fork a repository
+gh repo fork owner/repo
+
+# Sync your fork with upstream
+gh repo sync
+
+# Check fork status
+gh repo view --json forkCount
+
+# View upstream repository
+gh repo view owner/repo
+
+# Compare your fork with upstream
+gh repo compare your-username/repo..owner/repo
+
+# Check if your fork is behind upstream
+gh repo view --json isFork,parent
+
+# Update your fork from upstream
+gh repo sync --force
+```
+
+---
+
+## Rewriting History
+
+One of the great but also dangerous features of Git is that it allows us to rewrite our history. We can drop or modify commits, combine or split them, and so on.
+
+## Why Rewrite History?
+
+We need history to see what was changed, why, and when. If our commit messages are not meaningful, or if our commits are too large and contain unrelated changes, or if they're too small and scattered all over the history, then we're not going to be able to extract meaningful information from the history.
+
+We want a clean, readable history that tells the story of our project, how it's evolved from day one. That's where rewriting the history comes in.
+
+**What we can do:**
+
+- **Squash commits**: Combine small related commits into a single logical change set
+- **Split commits**: Break large commits with unrelated changes into smaller, focused commits
+- **Reword messages**: Make commit messages more meaningful
+- **Drop commits**: Remove accidental or unnecessary commits
+- **Modify content**: Add forgotten files or fix mistakes in commits
+
+## The Golden Rule of Rewriting History
+
+**⚠️ Don't rewrite public history.**
+
+If you have pushed your commits to share your work with others, those commits are considered public, and you should not modify them.
+
+**Why this rule exists:**
+
+- Commits in Git are immutable - once created, they cannot be changed
+- Modifying a public commit creates a new commit (e.g., `B` becomes `B*`)
+- This creates divergent history that requires force pushing
+- Force pushing can cause problems for collaborators who have based their work on the original commits
+- It creates noisy, non-linear history with unnecessary merge commits
+
+**When it's safe to rewrite:**
+
+- **Private history**: Commits that only exist in your local repository
+- **Before sharing**: Clean up your work before pushing to shared repositories
+- **Feature branches**: When working on personal feature branches that haven't been shared
+
+## Example of Bad History
+
+Consider a repository with these problematic commits:
+
+- "render restaurants the map" (missing word "on")
+- "fix a typo" (unnecessary noise)
+- "change the color of restaurant icons" (part of same unit of work)
+- "add a reference to google map SDK" (wrong position in history)
+- "wip" (work in progress - meaningless)
+- "update terms of service and google map SDK" (unrelated changes)
+- "." (mysterious message)
+
+These commits create a confusing, noisy history that doesn't tell a clear story.
+
+## Undoing Commits
+
+### Using `git reset`
+
+For commits that haven't been pushed (private history):
+
+```bash
+# Soft reset - keeps changes in staging area
+git reset --soft HEAD~1
+
+# Mixed reset - keeps changes in working directory (default)
+git reset --mixed HEAD~1
+# or simply
+git reset HEAD~1
+
+# Hard reset - discards all changes
+git reset --hard HEAD~1
+```
+
+**Understanding reset options:**
+
+- **`--soft`**: Only removes the commit, keeps changes staged
+- **`--mixed`**: Removes commit and unstages changes (default)
+- **`--hard`**: Removes commit and discards all changes
+
+### Using `git revert`
+
+For commits that have been pushed (public history):
+
+```bash
+# Revert the last commit
+git revert HEAD
+
+# Revert a specific commit
+git revert <commit-hash>
+
+# Revert multiple commits
+git revert HEAD~3..HEAD
+
+# Revert multiple commits as a single commit
+git revert --no-commit HEAD~3..HEAD
+git commit -m "Revert bad code"
+```
+
+## Recovering Lost Commits
+
+Git keeps all commits in the repository until garbage collection occurs. Use `git reflog` to recover lost commits:
+
+```bash
+# View reflog (history of HEAD movements)
+git reflog
+
+# View reflog for a specific branch
+git reflog show feature
+
+# Recover a lost commit using its hash
+git reset --hard <commit-hash>
+
+# Recover using reflog entry
+git reset --hard HEAD@{1}
+```
+
+**Example reflog output:**
+
+```
+abc1234 HEAD@{0}: reset: moving to HEAD~6
+def5678 HEAD@{1}: commit: revert bad code
+ghi9012 HEAD@{2}: rebase finished: returning to refs/heads/master
+```
+
+### Understanding Git Reflog
+
+The reflog (reference log) is Git's safety net. It records every change to branch tips and other references in your local repository, making it possible to recover from almost any mistake.
+
+#### **What the Reflog Tracks**
+
+The reflog tracks:
+
+- **HEAD movements**: Every time HEAD points to a different commit
+- **Branch updates**: When branches are created, deleted, or moved
+- **Git operations**: Commits, resets, rebases, merges, checkouts
+- **Time information**: When each action occurred
+
+#### **Reflog Entry Format**
+
+Each reflog entry follows this format:
+
+```
+<commit-hash> <reference>@{<number>}: <action>: <description>
+```
+
+**Breaking down the components:**
+
+1. **`<commit-hash>`**: The commit hash that the reference pointed to
+2. **`<reference>`**: The reference being tracked (usually HEAD or branch name)
+3. **`@{<number>}`**: The position in the reflog (0 = most recent, 1 = second most recent, etc.)
+4. **`<action>`**: The type of Git operation performed
+5. **`<description>`**: Human-readable description of what happened
+
+#### **Detailed Reflog Output Analysis**
+
+**Example reflog output:**
+
+```
+abc1234 HEAD@{0}: reset: moving to HEAD~6
+def5678 HEAD@{1}: commit: revert bad code
+ghi9012 HEAD@{2}: rebase finished: returning to refs/heads/master
+jkl3456 HEAD@{3}: rebase: pick: render restaurants on the map
+mno7890 HEAD@{4}: commit: add google map integration
+pqr1234 HEAD@{5}: checkout: moving from feature to master
+stu5678 HEAD@{6}: commit: implement user authentication
+vwx9012 HEAD@{7}: checkout: moving from master to feature
+```
+
+**Interpreting each line:**
+
+**Line 1: `abc1234 HEAD@{0}: reset: moving to HEAD~6`**
+
+- **Hash**: `abc1234` - The commit HEAD currently points to
+- **Position**: `HEAD@{0}` - Most recent action (current state)
+- **Action**: `reset` - A reset operation was performed
+- **Description**: `moving to HEAD~6` - Reset to 6 commits back
+
+**Line 2: `def5678 HEAD@{1}: commit: revert bad code`**
+
+- **Hash**: `def5678` - The commit HEAD pointed to before the reset
+- **Position**: `HEAD@{1}` - Second most recent action
+- **Action**: `commit` - A commit was made
+- **Description**: `revert bad code` - The commit message
+
+**Line 3: `ghi9012 HEAD@{2}: rebase finished: returning to refs/heads/master`**
+
+- **Hash**: `ghi9012` - The commit HEAD pointed to before the revert
+- **Position**: `HEAD@{2}` - Third most recent action
+- **Action**: `rebase finished` - A rebase operation completed
+- **Description**: `returning to refs/heads/master` - Rebase returned to master branch
+
+#### **Common Reflog Actions and Their Meanings**
+
+| Action            | Meaning                                  | When It Happens              |
+| ----------------- | ---------------------------------------- | ---------------------------- |
+| `commit`          | A new commit was created                 | `git commit`                 |
+| `reset`           | HEAD was moved to a different commit     | `git reset`                  |
+| `checkout`        | Switched to a different branch or commit | `git checkout`, `git switch` |
+| `merge`           | A merge was performed                    | `git merge`                  |
+| `rebase`          | A rebase operation was performed         | `git rebase`                 |
+| `rebase finished` | A rebase operation completed             | After successful rebase      |
+| `rebase: pick`    | Interactive rebase picked a commit       | During interactive rebase    |
+| `rebase: squash`  | Interactive rebase squashed a commit     | During interactive rebase    |
+| `rebase: edit`    | Interactive rebase stopped for editing   | During interactive rebase    |
+| `pull`            | Changes were pulled from remote          | `git pull`                   |
+| `push`            | Changes were pushed to remote            | `git push`                   |
+| `cherry-pick`     | A commit was cherry-picked               | `git cherry-pick`            |
+
+#### **Understanding Reflog Numbers**
+
+The `@{<number>}` syntax represents the position in the reflog:
+
+- **`HEAD@{0}`**: Current state (most recent)
+- **`HEAD@{1}`**: Previous state
+- **`HEAD@{2}`**: Two states ago
+- **`HEAD@{3}`**: Three states ago
+- And so on...
+
+**Important:** Reflog entries are relative to the current time, not absolute positions.
+
+#### **Recovery Strategies Based on Reflog Analysis**
+
+##### **1. Recovering from a Hard Reset**
+
+**Scenario:** You accidentally ran `git reset --hard HEAD~5` and lost commits.
+
+**Analysis:**
+
+```
+abc1234 HEAD@{0}: reset: moving to HEAD~5
+def5678 HEAD@{1}: commit: important feature
+ghi9012 HEAD@{2}: commit: bug fix
+```
+
+**Recovery:**
+
+```bash
+# Option 1: Reset to the commit before the reset
+git reset --hard HEAD@{1}
+
+# Option 2: Use the specific commit hash
+git reset --hard def5678
+```
+
+##### **2. Recovering from a Failed Rebase**
+
+**Scenario:** A rebase failed and you want to return to the state before it started.
+
+**Analysis:**
+
+```
+abc1234 HEAD@{0}: rebase: pick: commit message
+def5678 HEAD@{1}: rebase: pick: another commit
+ghi9012 HEAD@{2}: rebase: pick: third commit
+jkl3456 HEAD@{3}: checkout: moving from feature to master
+```
+
+**Recovery:**
+
+```bash
+# Find the state before rebase started
+git reset --hard HEAD@{3}
+```
+
+##### **3. Recovering from a Branch Deletion**
+
+**Scenario:** You accidentally deleted a branch with unmerged commits.
+
+**Analysis:**
+
+```
+abc1234 HEAD@{0}: checkout: moving from deleted-branch to master
+def5678 HEAD@{1}: commit: work on deleted branch
+ghi9012 HEAD@{2}: checkout: moving from master to deleted-branch
+```
+
+**Recovery:**
+
+```bash
+# Create a new branch from the lost commit
+git branch recovered-branch def5678
+```
+
+#### **Advanced Reflog Techniques**
+
+##### **Filtering Reflog Output**
+
+```bash
+# Show only the last 10 entries
+git reflog -10
+
+# Show reflog for a specific branch
+git reflog show feature-branch
+
+# Show reflog with timestamps
+git reflog --date=iso
+
+# Show reflog with relative dates
+git reflog --date=relative
+```
+
+##### **Finding Specific Operations**
+
+```bash
+# Find all reset operations
+git reflog | grep "reset"
+
+# Find all rebase operations
+git reflog | grep "rebase"
+
+# Find commits with specific messages
+git reflog | grep "important feature"
+```
+
+##### **Using Reflog with Other Commands**
+
+```bash
+# Show the commit that HEAD pointed to 5 operations ago
+git show HEAD@{5}
+
+# Compare current state with 3 operations ago
+git diff HEAD@{3} HEAD
+
+# Check out the state from 2 operations ago
+git checkout HEAD@{2}
+```
+
+#### **Reflog Limitations and Considerations**
+
+##### **Time Limits**
+
+- **Local reflog**: Kept for 90 days by default
+- **Remote reflog**: Not available (remote repositories don't have reflog)
+- **Garbage collection**: Old reflog entries are cleaned up automatically
+
+##### **Repository-Specific**
+
+- Reflog is local to your repository
+- Not shared when you push/pull
+- Each clone has its own reflog
+
+##### **Checking Reflog Retention**
+
+```bash
+# Check reflog retention settings
+git config --get gc.reflogExpire
+git config --get gc.reflogExpireUnreachable
+
+# Set custom retention (example: 30 days)
+git config gc.reflogExpire 30.days
+git config gc.reflogExpireUnreachable 30.days
+```
+
+#### **Step-by-Step Recovery Process**
+
+##### **1. Assess the Situation**
+
+```bash
+# Check current status
+git status
+
+# View recent reflog entries
+git reflog -10
+```
+
+##### **2. Identify the Target State**
+
+```bash
+# Look for the operation that caused the problem
+git reflog | grep "reset\|rebase\|merge"
+
+# Find the commit you want to recover
+git reflog | grep "your commit message"
+```
+
+##### **3. Choose Recovery Method**
+
+```bash
+# Method 1: Reset to a specific reflog entry
+git reset --hard HEAD@{n}
+
+# Method 2: Reset to a specific commit hash
+git reset --hard <commit-hash>
+
+# Method 3: Create a new branch from lost commit
+git branch recovery-branch <commit-hash>
+```
+
+##### **4. Verify Recovery**
+
+```bash
+# Check that you're at the right commit
+git log --oneline -5
+
+# Verify your files are as expected
+git status
+```
+
+#### **Prevention Tips**
+
+1. **Create backup branches** before major operations
+2. **Use `git reset --soft`** instead of `--hard` when possible
+3. **Test commands** on a copy of your repository first
+4. **Use `git stash`** to save work before risky operations
+5. **Regular commits** make recovery easier
+
+#### **Using GitHub CLI for Recovery Context**
+
+```bash
+# Check repository status before recovery
+gh repo view --json updatedAt
+
+# View recent activity to understand what happened
+gh repo view --json recentCommits
+
+# Check if any recent pushes might have affected the repository
+gh repo view --json pushedAt
+```
+
+## Interactive Rebasing
+
+Interactive rebasing is one of Git's most powerful features for rewriting history. It allows you to modify, reorder, combine, or remove commits in a controlled way.
+
+### What is Interactive Rebasing?
+
+Interactive rebasing (`git rebase -i`) opens an editor with a list of commits that will be replayed. You can then modify how each commit is applied, allowing you to:
+
+- **Edit commit messages** without changing content
+- **Modify commit content** by stopping at specific commits
+- **Combine commits** by squashing them together
+- **Remove commits** entirely from history
+- **Reorder commits** by changing their position in the list
+- **Split commits** into multiple smaller commits
+
+### Basic Interactive Rebase Syntax
+
+```bash
+# Rebase the last N commits interactively
+git rebase -i HEAD~N
+
+# Rebase from a specific commit
+git rebase -i <commit-hash>
+
+# Rebase from the parent of a specific commit
+git rebase -i <commit-hash>^
+```
+
+### Understanding the Interactive Rebase Editor
+
+When you run `git rebase -i`, Git opens your default editor with a file like this:
+
+```
+pick abc1234 render restaurants on the map
+pick def5678 fix a typo
+pick ghi9012 change the color of restaurant icons
+pick jkl3456 add a reference to google map SDK
+
+# Rebase instructions:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+```
+
+```bash
+# Continue after making changes
+git rebase --continue
+
+# Abort if something goes wrong
+git rebase --abort
+
+# Skip a commit (if needed)
+git rebase --skip
+```
+
+### Amending the Last Commit
+
+Modify the most recent commit (only for unpushed commits):
+
+```bash
+# Amend commit message
+git commit --amend -m "New commit message"
+
+# Amend commit content (add forgotten files)
+git add forgotten-file.txt
+git commit --amend
+
+# Amend commit content (modify files)
+# Edit files, then:
+git add .
+git commit --amend
+```
+
+**Important:** Amending creates a new commit with a different hash, even though it appears to modify the original.
+
+## Amending an Earlier Commit
+
+Use interactive rebasing to modify commits that aren't the most recent:
+
+```bash
+# Start interactive rebase from the commit before the one you want to edit
+git rebase -i <commit-hash>^
+
+# In the editor, change 'pick' to 'edit' for the commit you want to modify
+# Make your changes, then:
+git add .
+git commit --amend
+git rebase --continue
+```
+
+### Dropping a Commit
+
+Remove a commit entirely from history:
+
+```bash
+# Start interactive rebase
+git rebase -i <commit-hash>^
+
+# In the editor, change 'pick' to 'drop' or delete the line entirely
+# Save and close the editor
+```
+
+**Note:** Dropping commits may cause conflicts if subsequent commits depend on the dropped changes.
+
+### Rewording Commit Messages
+
+Change commit messages without modifying content:
+
+```bash
+# Start interactive rebase
+git rebase -i <commit-hash>^
+
+# In the editor, change 'pick' to 'reword' for commits to modify
+# Git will stop at each commit marked 'reword' to let you edit the message
+```
+
+### Reordering Commits
+
+Change the order of commits in history:
+
+```bash
+# Start interactive rebase
+git rebase -i <commit-hash>^
+
+# In the editor, reorder the lines as desired
+# Commits are applied in the order they appear in the file
+```
+
+### Squashing Commits
+
+Combine multiple commits into one:
+
+```bash
+# Start interactive rebase
+git rebase -i <commit-hash>^
+
+# In the editor, change 'pick' to 'squash' for commits to combine
+# Git will prompt for a new commit message
+```
+
+**Example interactive rebase file:**
+
+```
+pick abc1234 render restaurants on the map
+squash def5678 fix a typo
+squash ghi9012 change the color of restaurant icons
+```
+
+#### Using `fixup` Instead of `squash`
+
+Similar to squash but discards the commit messages of squashed commits:
+
+```bash
+# In interactive rebase, use 'fixup' instead of 'squash'
+pick abc1234 render restaurants on the map
+fixup def5678 fix a typo
+fixup ghi9012 change the color of restaurant icons
+```
+
+The resulting commit will only use the message from the first commit.
+
+### Splitting a Commit
+
+Break a large commit into smaller, focused commits:
+
+```bash
+# Start interactive rebase
+git rebase -i <commit-hash>^
+
+# In the editor, change 'pick' to 'edit' for the commit to split
+# When Git stops, reset to the previous commit:
+git reset HEAD^
+
+# Stage and commit parts separately:
+git add file1.txt
+git commit -m "First part of the change"
+
+git add file2.txt
+git commit -m "Second part of the change"
+
+# Continue the rebase:
+git rebase --continue
+```
+
+### Interactive Rebase Commands
+
+When using `git rebase -i`, you can use these commands:
+
+- **`pick`**: Use the commit as-is (default)
+- **`reword`**: Use the commit but edit the message
+- **`edit`**: Use the commit but stop for amending
+- **`squash`**: Use the commit but meld into previous commit
+- **`fixup`**: Like squash but discard this commit's message
+- **`drop`**: Remove the commit entirely
+
+### Advanced Interactive Rebase Techniques
+
+#### **Using `exec` Command**
+
+```bash
+# Run a command at each commit
+git rebase -i HEAD~3
+
+# In editor:
+pick abc1234 first commit
+exec npm test
+pick def5678 second commit
+exec npm test
+```
+
+#### **Conditional Rebasing**
+
+```bash
+# Only rebase commits that match a pattern
+git rebase -i --exec 'git log --oneline -1' HEAD~5
+```
+
+### Troubleshooting Interactive Rebase
+
+#### **Common Issues and Solutions**
+
+**1. Merge Conflicts During Rebase**
+
+```bash
+# Resolve conflicts manually
+git status
+# Edit conflicted files
+git add resolved-file.txt
+git rebase --continue
+```
+
+**2. Aborting a Rebase**
+
+```bash
+# If something goes wrong
+git rebase --abort
+```
+
+**3. Recovering from a Failed Rebase**
+
+```bash
+# Check reflog to find the state before rebase
+git reflog
+
+# Reset to the state before rebase
+git reset --hard HEAD@{1}
+```
+
+**4. Continuing After Manual Edits**
+
+```bash
+# After making changes during an 'edit' stop
+git add .
+git commit --amend
+git rebase --continue
+```
+
+### Best Practices for Interactive Rebase
+
+1. **Always work on a backup branch** before major rebasing
+2. **Test your code** after completing the rebase
+3. **Use meaningful commit messages** when combining commits
+4. **Keep commits focused** - each should represent one logical change
+5. **Don't rebase shared history** - only rebase commits that haven't been pushed
+6. **Use `fixup` for minor changes** and `squash` for related changes
+7. **Review the final history** with `git log --oneline --graph`
+
+[This YouTube video](https://www.youtube.com/watch?v=H7RFt0Pxxp8) is excellent at detailing interactive rebasing.
+
+### Best Practices for History Rewriting
+
+1. **Only rewrite private history**: Never rewrite commits that have been pushed
+2. **Test after rewriting**: Ensure your code still works after history changes
+3. **Communicate with team**: Let others know if you need to force push
+4. **Use meaningful messages**: Write clear, descriptive commit messages
+5. **Keep commits focused**: Each commit should represent a single logical change
+6. **Regular cleanup**: Clean up history before sharing with others
+
+### Using GitHub CLI for History Management
+
+GitHub CLI provides some tools for managing repository history:
+
+```bash
+# View repository history with additional context
+gh repo view --json recentCommits
+
+# Check repository status before rewriting history
+gh repo view --json isPrivate
+
+# View recent activity to understand what's been shared
+gh repo view --json updatedAt
+```
+
+**Note:** Most history rewriting operations are performed with Git commands rather than GitHub CLI, as they operate on local repository state.
