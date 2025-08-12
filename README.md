@@ -1,27 +1,5 @@
 # git-notes
 
-<p align="center">
-<img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-`--soft`: Removes the commit
-
-<p align="center">
-<img src="resetting/resetting-2.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-`--mixed`: Removes the commit and unstages files
-
-<p align="center">
-<img src="resetting/resetting-3.png" alt="Resetting commits" style="width:70%;">
-</p>
-
-`--hard`: Removes the commit, unstages files, and discards the local changes
-
-<p align="center">
-<img src="resetting/resetting-4.png" alt="Resetting commits" style="width:70%;">
-</p>
-
 ## Working on a forked repository
 
 1. Fork a remote repository for an open source project and clone it on your local machine
@@ -2962,3 +2940,111 @@ This command:
 - Emergency situations requiring immediate rollback
 
 **Note**: If there were uncommitted changes when the merge started, `git merge --abort` may not be able to reconstruct the original state in some cases. It's recommended to commit or stash changes before merging.
+
+## Undoing a Faulty Merge
+
+Sometimes after completing a merge, the code doesn't compile or the application doesn't work properly. This can happen when changes aren't combined correctly during the merge process. In such situations, the merge needs to be undone and redone.
+
+### Two Approaches to Undoing a Merge
+
+When undoing a merge commit, there are two main approaches depending on whether the history has been shared with others:
+
+#### 1. **Reset (History Rewriting)**
+
+Use `git reset` to remove the merge commit as if it never existed. This approach rewrites history and should only be used when the commits are local and haven't been shared.
+
+```bash
+# Reset to the commit before the merge
+git reset --hard HEAD~1
+```
+
+**Reset Options:**
+
+<p align="center">
+<img src="resetting/resetting-1.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+- **`--soft`**: Moves HEAD pointer but keeps staging area and working directory unchanged. Only removes the commit.
+
+<p align="center">
+<img src="resetting/resetting-2.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+- **`--mixed`** (default): Moves HEAD pointer and updates staging area, but preserves working directory changes. Removes the commit and unstages files.
+
+<p align="center">
+<img src="resetting/resetting-3.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+- **`--hard`**: Moves HEAD pointer, updates staging area, and discards all working directory changes. Removes the commit, unstages files, and discards the local changes
+
+<p align="center">
+<img src="resetting/resetting-4.png" alt="Resetting commits" style="width:70%;">
+</p>
+
+**Recovery:**
+If you need to recover the reset merge commit, you can use the commit hash:
+
+```bash
+# Recover the merge commit using its hash
+git reset --hard <merge-commit-hash>
+```
+
+**Note**: After resetting, the merge commit becomes "orphaned" (no pointers reference it).
+
+![](resetting/20250717232334.png)
+
+Git's garbage collector will eventually remove these orphaned commits from the repository.
+
+![](resetting/20250717232353.png)
+However, the commit remains recoverable using its hash until garbage collection occurs.
+
+#### 2. **Revert (Safe for Shared History)**
+
+Use `git revert` to create a new commit that undoes the changes from the merge commit. This approach is safe for shared history because it doesn't rewrite existing commits.
+
+- `git revert` instead **creates a new commit**
+
+```bash
+# Revert a merge commit
+git revert -m 1 HEAD
+```
+
+**The `-m 1` option:**
+
+- Merge commits have two parents (the branches being merged)
+- `-m 1` specifies which parent to revert to (usually the main branch)
+- Parent 1 is typically the branch you were on when merging (e.g., master)
+- Parent 2 is the branch being merged in
+
+### When to Use Each Approach
+
+**Use `git reset` when:**
+
+- The merge commit is local and hasn't been pushed
+- You want to completely remove the merge from history
+- You're working on a personal branch
+
+**Use `git revert` when:**
+
+- The merge commit has been pushed to a shared repository
+- Other team members may have based work on the merge commit
+- You want to preserve the history for audit purposes
+
+### Example Workflow
+
+```bash
+# 1. Identify the faulty merge commit
+git log --oneline
+
+# 2a. If local only - Reset (rewrites history)
+git reset --hard HEAD~1
+
+# 2b. If shared - Revert (preserves history)
+git revert -m 1 HEAD
+
+# 3. Re-merge the branches with proper conflict resolution
+git merge feature-branch
+```
+
+**Important**: Always verify that you're reverting to the correct parent branch. The first parent (`-m 1`) is typically the branch you were on when performing the merge.
