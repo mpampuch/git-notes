@@ -3048,3 +3048,141 @@ git merge feature-branch
 ```
 
 **Important**: Always verify that you're reverting to the correct parent branch. The first parent (`-m 1`) is typically the branch you were on when performing the merge.
+
+## Squash Merging
+
+Squash merging combines all changes from a feature branch into a single commit on the target branch, creating a clean, linear history without preserving the individual commits from the source branch.
+
+### When to Use Squash Merging
+
+Squash merging is ideal for:
+
+- **Low-quality commits**: When branch commits are too fine-grained or don't represent logical change sets
+- **Checkpoint commits**: Commits added as work-in-progress checkpoints that aren't meaningful for history
+- **Small, short-lived branches**: Bug fixes or features that can be implemented in hours or days
+- **Clean history**: When you want to avoid polluting the main branch with detailed development history
+
+### How Squash Merging Works
+
+Instead of creating a merge commit that preserves branch history, squash merging:
+
+1. Combines all changes from the source branch into a single commit
+2. Applies this combined commit on top of the target branch
+3. Creates a linear history without branch references
+
+#### Example
+
+- Commits `B1` and `B2` were made when fixing a bug.
+
+![](squash-merging/20250717232738.png)
+
+- They were merged into our master branch
+
+![](squash-merging/20250717232743.png)
+
+- But `B1` and `B2` are not good commits. They were only made as checkpoints when fixing our bugfix branch. Now the history is polluted with bad quality commits.
+
+- Instead you can use squash merging.
+
+- Starting from the initial scenario
+
+  ![](squash-merging/20250717232809.png)
+
+- You create a new commit that combines all the changes of the bugfix branch
+
+  ![](squash-merging/20250717232820.png)
+
+- Now you can apply this commit on top of the `master` branch. The key difference between this and a merge commit is that the **the resulting commit doesn't have two parents**, but is instead a regular commit with all the combined changes.
+
+  ![](squash-merging/20250717232826.png)
+
+- Now you're done with the bugfix branch, you can delete it and now you're left with a single clean and linear history
+
+  ![](squash-merging/20250717232836.png)
+
+### Performing a Squash Merge
+
+```bash
+# Switch to the target branch (e.g., master)
+git switch master
+
+# Perform squash merge
+git merge --squash bugfix/photo-upload
+
+# The changes are now staged but not committed
+git status -s
+
+# Create the final commit with a meaningful message
+git commit -m "Fix the bug on the photo upload page"
+```
+
+### Important Considerations
+
+#### Branch Cleanup
+
+After squash merging, the source branch is **not** considered merged by Git:
+
+```bash
+# This will NOT show the squash-merged branch
+git branch --merged
+
+# This WILL show the branch as unmerged
+git branch --no-merged
+```
+
+**Critical**: You must manually delete the source branch after squash merging:
+
+```bash
+# Force delete the branch (required for squash-merged branches)
+git branch -D bugfix/photo-upload
+```
+
+#### Conflict Resolution
+
+If conflicts occur during squash merging, resolve them using the same process as regular merges:
+
+1. Use `git mergetool` or manual editing
+2. Stage the resolved files
+3. Complete the commit
+
+### Benefits of Squash Merging
+
+- **Clean history**: Single, meaningful commit representing the entire feature
+- **Linear timeline**: No complex branch history in the main branch
+- **Better readability**: Easier to understand the overall change
+- **Simplified rollback**: Single commit to revert if needed
+
+### When NOT to Use Squash Merging
+
+- **Preserving history**: When individual commits are meaningful and should be preserved
+- **Collaborative branches**: When multiple developers work on the same branch
+- **Long-lived features**: Complex features that benefit from detailed commit history
+- **Audit requirements**: When detailed change history is required for compliance
+
+### Example Workflow
+
+```bash
+# 1. Create and work on a feature branch
+git switch -c bugfix/photo-upload
+echo "bug fix" >> audience.txt
+git add audience.txt
+git commit -m "Update audience.txt"
+
+echo "bug fix" >> table-of-content.txt
+git add table-of-content.txt
+git commit -m "Update table-of-content.txt"
+
+# 2. Switch to master and squash merge
+git switch master
+git merge --squash bugfix/photo-upload
+
+# 3. Create the final commit
+git commit -m "Fix the bug on the photo upload page"
+
+# 4. Clean up the branch
+git branch -D bugfix/photo-upload
+```
+
+**Result**: A single commit on master that combines all changes from the bugfix branch, creating a clean linear history.
+
+[This YouTube short](https://www.youtube.com/shorts/SJPJBQWqlrQ) explains squash merging in git very well.
