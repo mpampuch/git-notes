@@ -3551,3 +3551,173 @@ Rebasing is a powerful tool for creating clean, linear history, but it comes wit
 Rebasing is excellent for maintaining a clean project history, but it requires discipline and understanding of Git's history model to use effectively.
 
 [This YouTube short](https://www.youtube.com/shorts/nzv0sbfprJo) explains rebasing in git very well.
+
+---
+
+## Cherry Picking
+
+Cherry picking allows you to select specific commits from one branch and apply them to another branch without merging the entire branch. This is useful when you want to bring specific changes into your current branch while leaving other changes behind.
+
+### What is Cherry Picking?
+
+Cherry picking copies a specific commit from one branch and creates a new commit with the same changes on your current branch. The new commit will have a different hash but contain the same changes.
+
+**Example scenario:**
+
+- Feature branch has commits `f1` and `f2`
+  ![](cherry-picking/20250717233702.png)
+- You want commit `f1` in master but aren't ready to merge the entire feature branch
+- Cherry pick `f1` to bring only those specific changes to master
+  ![](cherry-picking/20250717233708.png)
+
+### How to Cherry Pick
+
+```bash
+# Switch to the target branch (where you want to apply the commit)
+git switch master
+
+# Cherry pick a specific commit
+git cherry-pick <commit-hash>
+```
+
+**Example workflow:**
+
+```bash
+# Copy the commit hash from the source branch
+git log --oneline feature-branch
+
+# Cherry pick the commit
+git cherry-pick abc1234
+```
+
+### Conflict Resolution
+
+If conflicts occur during cherry picking:
+
+1. **Resolve conflicts** using your preferred method:
+
+   ```bash
+   git mergetool
+   # or manually edit conflicted files
+   ```
+
+2. **Stage resolved files**:
+
+   ```bash
+   git add <resolved-files>
+   ```
+
+3. **Complete the cherry pick**:
+   ```bash
+   git cherry-pick --continue
+   ```
+
+**Alternative options:**
+
+```bash
+# Abort the cherry pick and return to previous state
+git cherry-pick --abort
+
+# Skip the current commit and continue with the next one
+git cherry-pick --skip
+```
+
+### Cherry Picking Multiple Commits
+
+```bash
+# Cherry pick a range of commits (inclusive)
+git cherry-pick <start-commit>..<end-commit>
+
+# Cherry pick multiple specific commits
+git cherry-pick <commit1> <commit2> <commit3>
+```
+
+### Best Practices
+
+- **Use sparingly**: Cherry picking can create duplicate commits and complicate history
+- **Verify changes**: Always review the changes before cherry picking
+- **Consider alternatives**: Sometimes merging or rebasing is a better approach
+- **Document decisions**: Note why you chose cherry picking over other methods
+
+[This YouTube short](https://www.youtube.com/shorts/2qSSfOQuxvQ) explains cherry picking in git very well.
+
+## Picking Files from Another Branch
+
+Sometimes you want to bring specific files from another branch without cherry picking entire commits. Git provides a way to restore files from other branches directly.
+
+### Using `git restore` to Pick Files
+
+The `git restore` command can copy files from other branches to your working directory:
+
+```bash
+# Restore a file from another branch
+git restore --source=<branch-name> <file-path>
+
+# Short form
+git restore -s <branch-name> <file-path>
+```
+
+**Example:**
+
+```bash
+# Switch to target branch
+git switch master
+
+# Restore a file from feature branch
+git restore --source=feature/send-email table-of-content.txt
+```
+
+### When to Use File Picking
+
+- **Single file changes**: When you only need one file from another branch
+- **Partial integration**: When you want specific changes but not entire commits
+- **Quick fixes**: When you need to apply a fix from another branch immediately
+- **Selective updates**: When you want to update specific files without merging
+
+### Workflow Example
+
+```bash
+# 1. Create a feature branch and make changes
+git switch -c feature/send-email
+echo "river" >> table-of-content.txt
+git add table-of-content.txt
+git commit -m "update table of content"
+
+# 2. Switch back to master
+git switch master
+
+# 3. Restore the file from the feature branch
+git restore --source=feature/send-email table-of-content.txt
+
+# 4. Check the changes
+git status -s
+cat table-of-content.txt
+
+# 5. Stage and commit the changes
+git add table-of-content.txt
+git commit -m "Add river to table of content"
+```
+
+### Important Notes
+
+- **Working directory changes**: The file is restored to your working directory (not staged)
+- **Manual staging required**: You must stage and commit the changes yourself
+- **File path interpretation**: Use `--` to separate options from file paths if Git has trouble interpreting the filename
+- **Branch existence**: The source branch must exist and contain the file
+
+### Alternative Methods
+
+```bash
+# Using checkout (older method, still works)
+git checkout <branch-name> -- <file-path>
+
+# Using show to view file content
+git show <branch-name>:<file-path>
+```
+
+### Best Practices
+
+- **Verify the source**: Make sure you're restoring from the correct branch
+- **Review changes**: Always check what changes you're bringing over
+- **Commit appropriately**: Create meaningful commit messages for the restored files
+- **Consider context**: Ensure the file changes make sense in your current branch
