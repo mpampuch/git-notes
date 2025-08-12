@@ -3130,20 +3130,72 @@ git branch --merged
 git branch --no-merged
 ```
 
-**Critical**: You must manually delete the source branch after squash merging:
+**⚠️ Critical ⚠️**: You must manually delete the source branch after squash merging:
+
+If you try to delete as follows:
+
+```bash
+git branch -d bugfix/photo-upload
+```
+
+You will get an **error** because git doesn't know that that branch has been fully merged. So you have to force the deletion.
 
 ```bash
 # Force delete the branch (required for squash-merged branches)
 git branch -D bugfix/photo-upload
 ```
 
-#### Conflict Resolution
+**Why this happens:**
+
+- Squash merging doesn't create a merge commit that connects the two branches
+- Git sees the source branch as still containing unmerged work
+- The branch appears in `git branch --no-merged` output, which can be confusing
+
+**Potential confusion:**
+If you don't delete the source branch, you might run `git branch --no-merged` later and think you haven't merged the branch into master, even though the changes are already incorporated. This creates confusion about the repository state.
+
+**Deletion error:**
+When trying to delete a squash-merged branch with `git branch -d`, Git will show an error:
+
+```bash
+error: The branch 'bugfix/photo-upload' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D bugfix/photo-upload'.
+```
+
+This error occurs because Git doesn't recognize squash merging as a "real" merge. You must use the force delete option (`-D`) to remove the branch.
+
+#### ⚠️ Conflict Resolution
 
 If conflicts occur during squash merging, resolve them using the same process as regular merges:
 
 1. Use `git mergetool` or manual editing
 2. Stage the resolved files
 3. Complete the commit
+
+**Conflict scenarios:**
+
+- Conflicts can occur when applying a squash merge on top of master
+- This happens when the same files have been modified in both branches since they diverged
+- The conflict resolution process is identical to regular merge conflicts
+
+**Resolution workflow:**
+
+```bash
+# If conflicts occur during squash merge
+git merge --squash bugfix/photo-upload
+
+# Resolve conflicts using your preferred method
+git mergetool
+# or manually edit conflicted files
+
+# Stage resolved files
+git add .
+
+# Complete the squash merge with a commit
+git commit -m "Fix the bug on the photo upload page"
+```
+
+**Important**: Even with conflicts, the final result is still a single commit that combines all changes from the source branch, maintaining the clean linear history that squash merging provides.
 
 ### Benefits of Squash Merging
 
