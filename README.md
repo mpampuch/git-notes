@@ -4195,6 +4195,8 @@ git merge origin/master
 
 Pulling combines fetching and merging to bring remote changes into your current branch.
 
+![](pulling/20250717235920.png)
+
 ### Basic Pulling
 
 ```bash
@@ -4216,31 +4218,35 @@ git pull --rebase
 2. **Merges**: Integrates remote changes into your current branch
 3. **Creates merge commit**: If branches have diverged
 
+Example:
+
+![](pulling/20250718000022.png)
+
+Results in:
+
+![](pulling/20250718000049.png)
+
+Some people don't like the merge pulling because it pollutes the history. Alternatively you can use rebasing here
+
 **Pull with rebase (`git pull --rebase`):**
 
 1. **Fetches**: Downloads new commits from remote
 2. **Rebases**: Replays your local commits on top of remote changes
 3. **Creates linear history**: No merge commits
 
-### Merge vs Rebase Pull
+Example:
 
-**Merge approach:**
+![](pulling/20250718000139.png)
 
-```bash
-git pull
-# Results in:
-# A---B---C---M (master)
-#      \     /
-#       D---E (origin/master)
-```
+Results in:
 
-**Rebase approach:**
+![](pulling/20250718000151.png)
 
-```bash
-git pull --rebase
-# Results in:
-# A---B---D---E---C' (master)
-```
+Here git rebases your master branch on top of your origin/master branch. Since the base of the master branch in this scenario is `A`, when you use the `--rebase` option, git changes the base of your origin from A to C. So essentially it's copying your local changes on top of changes made by others. In this case you end up with a simple linear history.
+
+![](pulling/20250718000203.png)
+
+Which approach is better is subjective and which to use depends on what the team agrees on.
 
 ### Conflict Resolution
 
@@ -4258,8 +4264,6 @@ If conflicts occur during pull:
 - **Choose strategy**: Decide between merge and rebase based on team preferences
 - **Resolve conflicts carefully**: Ensure all conflicts are properly resolved
 - **Test after pull**: Verify that your code still works after integration
-
----
 
 ## Pushing
 
