@@ -3721,3 +3721,619 @@ git show <branch-name>:<file-path>
 - **Review changes**: Always check what changes you're bringing over
 - **Commit appropriately**: Create meaningful commit messages for the restored files
 - **Consider context**: Ensure the file changes make sense in your current branch
+
+---
+
+## Collaboration
+
+This section covers various tools needed to collaborate with others using Git. We'll explore common collaboration workflows, pushing and pulling from remote repositories, and essential GitHub tools.
+
+### Workflows
+
+Version control systems fall into two categories: **centralized** and **distributed**.
+
+![](workflows/20250717234756.png)
+
+#### Centralized vs Distributed Systems
+
+**Centralized systems** (like Subversion):
+
+- Single repository shared by all team members
+- Everyone depends on the central repository
+- If the server goes offline, no one can commit or view project history
+
+**Distributed systems** (like Git):
+
+- Every developer has a repository on their machine
+- Work can continue offline with local repositories
+- Synchronization can happen directly between developers or through a central repository
+
+#### Centralized Workflow
+
+Most private teams and closed-source projects use the **centralized workflow**:
+
+1. **Central repository**: Everyone has a local repository but uses a central repository to synchronize work
+2. **No single point of failure**: Work can continue locally even if the central repository is unavailable
+3. **Hosting options**:
+   - Private network server
+   - Git hosting services (GitHub, GitLab, Bitbucket)
+
+![](workflows/20250717234806.png)
+
+The benefit of this system is that if something happens to the central repository, work can still get done as team members can share their work with each other.
+
+![](workflows/20250717234815.png)
+
+**Example scenario with John and Amy:**
+
+1. Both clone the central repository to their local machines
+   ![](workflows/20250717234828.png)
+2. John makes commits locally
+   ![](workflows/20250717234832.png)
+3. John pushes his commits to the central repository
+   ![](workflows/20250717234837.png)
+4. Amy pulls John's work into her local repository
+   ![](workflows/20250717234842.png)
+5. If conflicts exist, Amy resolves them and pushes her changes
+   ![](workflows/20250717234846.png)
+
+**Key characteristics:**
+
+- Everyone has push access to the central repository
+- Used in most private teams
+- Simple and straightforward workflow
+
+#### Integration Manager Workflow
+
+Open source projects use the **integration manager workflow**:
+
+1. **Maintainers**: Have push access to the official repository
+2. **Contributors**: Do not have direct push access
+3. **Forking**: Contributors fork the project to get a cloud copy
+4. **Pull requests**: Contributors send pull requests to maintainers
+5. **Review and merge**: Maintainers review and integrate changes
+
+![](workflows/20250717234900.png)
+
+**Workflow steps:**
+
+1. Fork the project repository (creates a cloud copy)
+   ![](workflows/1.19.19.png)
+2. Clone the forked repository to your local machine
+   ![](workflows/20250717234916.png)
+3. Make commits locally
+   ![](workflows/1.20.43.png)
+4. Push commits to your forked repository
+   ![](workflows/20250717234942.png)
+5. Send a pull request to the project maintainers
+   ![](workflows/20250717234951.png)
+6. Maintainers can then pull the changes and review them
+   ![](workflows/20250717235002.png)
+7. If they are happy with the changes, they can merge them and push them into the official repository
+   ![](workflows/20250717235007.png)
+
+**Key characteristics:**
+
+- Only maintainers have push access to the official repository
+- Contributors work through forks and pull requests
+- Provides security and quality control for open source projects
+
+---
+
+## Creating a GitHub Repository
+
+GitHub is the most popular Git hosting platform. While this section uses GitHub, the concepts apply to other hosting services.
+
+### Repository Setup
+
+1. **Create account**: Go to GitHub.com and create a free account
+2. **Verify email**: Ensure your email is verified before proceeding
+3. **Create repository**: Click "New repository" or the "+" icon
+
+### Repository Configuration
+
+**Basic settings:**
+
+- **Name**: Choose a descriptive repository name
+- **Description**: Optional description of the project
+- **Visibility**:
+  - **Public**: Anyone on the internet can see (free)
+  - **Private**: Only invited users can see (requires payment for free accounts)
+
+**Initialization options:**
+
+- **README file**: Creates an initial README.md file
+- **Gitignore file**: Adds common ignore patterns for your project type
+- **License**: Adds a license file to your project
+
+### Repository URL Structure
+
+```
+https://github.com/<username>/<repository-name>
+```
+
+**Example**: `https://github.com/username/mars`
+
+### Adding Collaborators
+
+Even public repositories require explicit permission to push changes:
+
+1. **Go to Settings**: Click the "Settings" tab in your repository
+2. **Manage Access**: Navigate to "Manage access" section
+3. **Invite Collaborators**: Add team members by username, full name, or email
+4. **Accept Invitation**: Collaborators receive email invitations to accept
+
+**Access levels:**
+
+- **Read**: Can view and clone the repository
+- **Write**: Can push commits and create branches
+- **Admin**: Can manage repository settings and collaborators
+
+### Using GitHub CLI
+
+GitHub CLI (`gh`) provides a command-line interface for creating repositories directly from your terminal.
+
+#### Installation
+
+```bash
+# macOS (using Homebrew)
+brew install gh
+
+# Windows (using winget)
+winget install GitHub.cli
+
+# Linux (Ubuntu/Debian)
+sudo apt install gh
+
+# Or download from https://cli.github.com/
+```
+
+#### Authentication
+
+```bash
+# Login to GitHub
+gh auth login
+
+# Follow the interactive prompts to authenticate
+# Choose your preferred protocol (HTTPS or SSH)
+```
+
+#### Creating a Repository
+
+```bash
+# Create a new repository
+gh repo create <repository-name>
+
+# Create with specific options
+gh repo create <repository-name> --public --clone --remote origin
+
+# Create with description and initialization
+gh repo create <repository-name> --description "My awesome project" --public --add-readme
+```
+
+#### Common Options
+
+```bash
+# Visibility options
+gh repo create my-project --public    # Public repository
+gh repo create my-project --private   # Private repository
+
+# Initialization options
+gh repo create my-project --add-readme    # Add README file
+gh repo create my-project --gitignore     # Add .gitignore file
+gh repo create my-project --license       # Add license file
+
+# Cloning options
+gh repo create my-project --clone         # Clone after creation
+gh repo create my-project --remote origin # Set remote name
+
+# Source options
+gh repo create my-project --source .      # Create from current directory
+gh repo create my-project --source <path> # Create from specific path
+```
+
+#### Example Workflow
+
+```bash
+# 1. Create a new repository with README
+gh repo create my-awesome-project --public --add-readme
+
+# 2. Clone the repository (if not done automatically)
+gh repo clone username/my-awesome-project
+
+# 3. Add collaborators
+gh repo edit username/my-awesome-project --add-collaborator username2
+
+# 4. View repository information
+gh repo view username/my-awesome-project
+```
+
+#### Advantages of GitHub CLI
+
+- **Faster workflow**: Create repositories without leaving the terminal
+- **Automation friendly**: Easy to script and integrate into workflows
+- **Consistent interface**: Same commands across different platforms
+- **Integration**: Works seamlessly with existing Git workflows
+
+## Cloning a Repository
+
+Cloning creates a local copy of a remote repository with full history.
+
+### Basic Cloning
+
+```bash
+# Clone a repository
+git clone <repository-url>
+
+# Clone with custom directory name
+git clone <repository-url> <directory-name>
+```
+
+**Example:**
+
+```bash
+git clone https://github.com/username/mars.git
+git clone https://github.com/username/mars.git mars-project
+```
+
+### What Happens During Cloning
+
+1. **Downloads all commits**: Complete history is copied to your local machine
+2. **Creates local repository**: Full Git repository with `.git` directory
+3. **Sets up remote tracking**: Creates `origin` remote reference
+4. **Checks out default branch**: Usually `master` or `main`
+
+### Remote Tracking Branches
+
+After cloning, you'll see additional branch references:
+
+```bash
+git log --oneline --all
+```
+
+**Example output:**
+
+```
+abc1234 (HEAD -> master, origin/master, origin/HEAD) Initial commit
+```
+
+**Branch types:**
+
+- **`master`**: Your local master branch
+- **`origin/master`**: Remote tracking branch showing where master is in the remote repository
+- **`origin/HEAD`**: Points to the default branch in the remote repository
+
+### Remote Repository Information
+
+```bash
+# List remote repositories
+$ git remote
+origin
+
+# Show detailed remote information
+$ git remote -v
+origin  https://github.com/username/mars.git (fetch)
+origin  https://github.com/username/mars.git (push)
+```
+
+`-v` shows you the exact URLs your repository is going to use to talk to this remote repository
+
+- There are 2 channels, one for fetching new objects and one for pushing objects.
+
+**Key points:**
+
+- **`origin`**: Default name for the source repository
+- **Remote tracking branches**: Cannot be checked out or committed to directly
+- **Synchronization**: Local and remote repositories can evolve independently
+
+### Using GitHub CLI for Cloning
+
+GitHub CLI provides convenient shortcuts for cloning repositories, especially useful when you know the repository name but not the full URL.
+
+#### Basic Cloning with GitHub CLI
+
+```bash
+# Clone using repository name (if you have access)
+gh repo clone <owner>/<repository-name>
+
+# Clone your own repository
+gh repo clone my-project
+
+# Clone a specific repository
+gh repo clone username/mars-project
+```
+
+#### Advanced Cloning Options
+
+```bash
+# Clone with custom directory name
+gh repo clone username/mars-project my-custom-name
+
+# Clone specific branch
+gh repo clone username/mars-project -- --branch feature-branch
+
+# Clone with depth limit (shallow clone)
+gh repo clone username/mars-project -- --depth 1
+
+# Clone and switch to specific directory
+gh repo clone username/mars-project && cd mars-project
+```
+
+#### Fork and Clone Workflow
+
+```bash
+# Fork a repository and clone it in one step
+gh repo fork username/original-project --clone=true
+
+# Fork without cloning (just create the fork)
+gh repo fork username/original-project
+
+# Clone your fork later
+gh repo clone your-username/original-project
+```
+
+#### Repository Discovery and Cloning
+
+```bash
+# Browse repositories
+gh repo list
+
+# Search for repositories
+gh repo search <query>
+
+# Clone from search results
+gh repo clone $(gh repo search "react todo" --limit 1 --json nameWithOwner --jq '.[0].nameWithOwner')
+```
+
+#### Advantages of GitHub CLI Cloning
+
+- **Simplified URLs**: No need to remember or construct full GitHub URLs
+- **Authentication**: Automatically uses your GitHub credentials
+- **Fork workflow**: Streamlined process for contributing to projects
+- **Repository discovery**: Easy to find and clone repositories
+- **Consistent experience**: Same interface across different platforms
+
+## Fetching
+
+Fetching downloads new commits from a remote repository without merging them into your current branch.
+
+### Basic Fetching
+
+```bash
+# Fetch from origin (default remote)
+git fetch
+
+# Fetch from specific remote
+git fetch origin
+
+# Fetch specific branch
+git fetch origin master
+```
+
+### What Fetch Does
+
+1. **Downloads new commits**: Retrieves commits that exist in remote but not locally
+2. **Updates remote tracking branches**: Moves `origin/master` to point to the latest remote commit
+3. **Does NOT merge**: Your working directory and current branch remain unchanged
+4. **Does NOT update HEAD**: Your local branch pointers stay the same
+
+### Understanding Local vs Remote Repositories
+
+**Important concept**: Your local repository is **not continuously connected** to the remote repository. They are separate entities that can evolve independently.
+
+**Example scenario:**
+
+- **Local repository**: Has commit A, master points to A
+- **Remote repository**: Has commits A and B, master points to B
+  ![](fetching/20250717235615.png)
+- **After fetch**:
+
+  - Local repository still has master pointing to A
+  - `origin/master` now points to B (showing where remote master is)
+  - Working directory still reflects commit A
+
+  ![](fetching/20250717235623.png)
+
+- Two get the new changes in your working directory, you have to merge your remote tracking branch into your main branch
+  ![](fetching/20250717235659.png)
+
+```bash
+# Merge remote changes into your current branch
+git merge origin/master
+```
+
+**Result**:
+
+Fast-forward merge (if branches haven't diverged)
+
+```
+After merge:
+Local:     A---B (master, origin/master)
+Remote:    A---B (master)
+```
+
+If your local and remote branches have diverged:
+
+```bash
+# Local:     A---C (master)
+# Remote:    A---B (master)
+
+git fetch
+# Local:     A---C (master)     B (origin/master)
+# Remote:    A---B (master)
+
+git merge origin/master
+# Potential conflict between commits C and B
+```
+
+### Example Workflow
+
+```bash
+# 1. Check current state
+git log --oneline
+git branch -vv
+
+# 2. Fetch new commits
+git fetch
+
+# 3. Check updated remote tracking
+git log --oneline --all
+git branch -vv
+
+# 4. Merge if desired
+git merge origin/master
+```
+
+### ✅ When to Use Fetch
+
+- **Review before merging**: See what changes exist before integrating
+- **Inspect remote changes**: Examine commits without affecting your work
+- **Selective integration**: Choose which remote changes to include
+- **Safe operation**: No risk of conflicts or unwanted merges
+
+## Pulling
+
+Pulling combines fetching and merging to bring remote changes into your current branch.
+
+### Basic Pulling
+
+```bash
+# Pull from origin (default remote and current branch)
+git pull
+
+# Pull from specific remote and branch
+git pull origin master
+
+# Pull with rebase instead of merge
+git pull --rebase
+```
+
+### What Pull Does
+
+**Standard pull (`git pull`):**
+
+1. **Fetches**: Downloads new commits from remote
+2. **Merges**: Integrates remote changes into your current branch
+3. **Creates merge commit**: If branches have diverged
+
+**Pull with rebase (`git pull --rebase`):**
+
+1. **Fetches**: Downloads new commits from remote
+2. **Rebases**: Replays your local commits on top of remote changes
+3. **Creates linear history**: No merge commits
+
+### Merge vs Rebase Pull
+
+**Merge approach:**
+
+```bash
+git pull
+# Results in:
+# A---B---C---M (master)
+#      \     /
+#       D---E (origin/master)
+```
+
+**Rebase approach:**
+
+```bash
+git pull --rebase
+# Results in:
+# A---B---D---E---C' (master)
+```
+
+### Conflict Resolution
+
+If conflicts occur during pull:
+
+1. **Resolve conflicts**: Edit conflicted files
+2. **Stage resolved files**: `git add <resolved-files>`
+3. **Continue operation**:
+   - For merge: `git commit` (or `git merge --continue`)
+   - For rebase: `git rebase --continue`
+
+### Best Practices
+
+- **Pull before pushing**: Always pull latest changes before pushing
+- **Choose strategy**: Decide between merge and rebase based on team preferences
+- **Resolve conflicts carefully**: Ensure all conflicts are properly resolved
+- **Test after pull**: Verify that your code still works after integration
+
+---
+
+## Pushing
+
+Pushing uploads your local commits to a remote repository.
+
+### Basic Pushing
+
+```bash
+# Push current branch to origin
+git push
+
+# Push specific branch to origin
+git push origin master
+
+# Push to specific remote and branch
+git push <remote> <branch>
+```
+
+### What Push Does
+
+1. **Uploads commits**: Sends local commits that don't exist in remote
+2. **Updates remote branch**: Moves the remote branch pointer forward
+3. **Updates remote tracking**: Moves `origin/master` to match remote
+4. **Requires authentication**: GitHub credentials or SSH keys needed
+
+### Push Rejection
+
+Push may be rejected if remote has commits you don't have locally:
+
+```bash
+$ git push
+To https://github.com/username/mars.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'https://github.com/username/mars.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+```
+
+### Resolving Push Rejection
+
+**Never use `--force` unless absolutely necessary:**
+
+```bash
+# ❌ DANGEROUS - overwrites remote history
+git push --force
+
+# ✅ SAFE - integrate remote changes first
+git pull
+# Resolve any conflicts
+git push
+```
+
+**Alternative with rebase:**
+
+```bash
+git pull --rebase
+git push
+```
+
+### Force Push Warning
+
+**⚠️ CAUTION**: Force pushing (`git push --force`) is dangerous because it:
+
+- Overwrites remote history
+- Deletes other people's work
+- Can cause data loss
+- Should only be used when you've "screwed things up" and need to fix local history
+
+### Best Practices
+
+- **Pull before push**: Always ensure you have the latest remote changes
+- **Avoid force push**: Never use `--force` in shared repositories
+- **Test before push**: Ensure your code works before sharing
+- **Use feature branches**: Push to feature branches before merging to main
+- **Communicate with team**: Let others know when you're pushing major changes
