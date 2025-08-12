@@ -4361,3 +4361,678 @@ git push origin branch-name
 git switch main
 git branch -D branch-name
 ```
+
+---
+
+## Storing Credentials
+
+Entering GitHub credentials every time you push is tedious and time-consuming. Git provides ways to store credentials in memory or on disk.
+
+### Credential Helpers
+
+```bash
+# Store credentials in memory for 15 minutes
+git config --global credential.helper cache
+
+# Store credentials permanently on disk (platform-specific)
+git config --global credential.helper store
+```
+
+### Platform-Specific Storage
+
+**macOS (Keychain):**
+
+```bash
+# Check if keychain helper is installed
+git credential-osxkeychain
+
+# Configure Git to use keychain
+git config --global credential.helper osxkeychain
+```
+
+**Windows (Credential Manager):**
+
+```bash
+# Install Git Credential Manager for Windows
+# Download from: https://github.com/Microsoft/Git-Credential-Manager-for-Windows
+
+# Configure Git to use Windows Credential Manager
+git config --global credential.helper manager
+```
+
+### Security Benefits
+
+- **Encrypted storage**: Credentials are stored securely in platform-specific vaults
+- **Automatic authentication**: No need to enter credentials repeatedly
+- **Cross-application**: Works with other Git tools and applications
+
+---
+
+## Sharing Tags
+
+By default, the `git push` command doesn't transfer tags to remote repositories. Tags must be explicitly pushed.
+
+### Pushing Tags
+
+```bash
+# Push a specific tag
+git push origin v1.0
+
+# Push all tags
+git push origin --tags
+
+# Push all tags to all remotes
+git push --tags
+```
+
+### Deleting Remote Tags
+
+```bash
+# Delete a tag from remote repository
+git push origin --delete v1.0
+
+# Alternative syntax
+git push origin :refs/tags/v1.0
+```
+
+### Tag Management Workflow
+
+```bash
+# Create a tag
+git tag v1.0
+
+# Verify tag exists locally
+git tag
+
+# Push tag to remote
+git push origin v1.0
+
+# Delete tag from remote (if needed)
+git push origin --delete v1.0
+
+# Delete local tag
+git tag -d v1.0
+```
+
+---
+
+## Releases
+
+GitHub Releases provide a way to package software along with source code, binary files, and release notes.
+
+### Creating a Release
+
+1. **Navigate to repository**: Go to your GitHub repository
+2. **Access releases**: Click "Releases" in the right sidebar
+3. **Create release**: Click "Create a new release"
+4. **Choose tag**: Select existing tag or create new one
+5. **Set title**: Use descriptive release title
+6. **Add description**: Include release notes with changes
+7. **Attach files**: Upload binary files if needed
+8. **Publish**: Click "Publish release"
+
+### Release Components
+
+- **Tag**: Links release to specific commit
+- **Title**: Descriptive name for the release
+- **Description**: Detailed release notes with changes
+- **Assets**: Binary files, installers, or documentation
+- **Pre-release flag**: Mark as not production-ready
+
+### Release Notes Example
+
+```markdown
+# Version 1.0
+
+## Release Notes
+
+### Bug Fixes
+
+- Fixed bug 1
+- Fixed bug 2
+
+### New Features
+
+- Added login form
+- Implemented user authentication
+
+### Improvements
+
+- Enhanced performance
+- Updated documentation
+```
+
+---
+
+## Sharing Branches
+
+Branches are private/local by default. To collaborate with team members using a branch, you must explicitly push it.
+
+### Pushing New Branches
+
+```bash
+# Create and switch to new branch
+git switch -c feature/change-password
+
+# Push branch and set upstream
+git push -u origin feature/change-password
+
+# Alternative: push and set upstream separately
+git push origin feature/change-password
+git branch --set-upstream-to=origin/feature/change-password
+```
+
+### Branch Tracking
+
+```bash
+# View branch tracking information
+git branch -vv
+
+# Example output:
+# * master abc1234 [origin/master] Latest commit
+#   feature/change-password def5678 [origin/feature/change-password] Feature commit
+```
+
+### Deleting Remote Branches
+
+```bash
+# Delete branch from remote repository
+git push origin --delete feature/change-password
+
+# Verify deletion
+git branch -r
+```
+
+### Local Branch Cleanup
+
+```bash
+# Switch to master branch
+git switch master
+
+# Delete local branch
+git branch -d feature/change-password
+
+# Clean up remote tracking branches
+git remote prune origin
+```
+
+---
+
+## Collaboration Workflow
+
+A complete workflow for collaborating on features using branches.
+
+### Creating Branches on GitHub
+
+1. **Navigate to repository**: Go to your GitHub repository
+2. **Branch dropdown**: Click the branch dropdown (usually shows "master")
+3. **Create branch**: Type new branch name and press Enter
+4. **Branch created**: New branch is now active and even with master
+
+### Local Setup for Remote Branches
+
+```bash
+# Fetch new remote branches
+git fetch
+
+# Create local branch tracking remote branch
+git switch -c feature/change-password origin/feature/change-password
+
+# Verify tracking is set up
+git branch -vv
+```
+
+### Collaborative Development
+
+**Team member workflow:**
+
+```bash
+# Clone repository
+git clone https://github.com/username/project.git
+
+# Create local branch tracking remote feature branch
+git switch -c feature/change-password origin/feature/change-password
+
+# Make changes and commit
+echo "password" >> file1.txt
+git add file1.txt
+git commit -m "update file1"
+
+# Push changes
+git push
+```
+
+### Merging Feature Branches
+
+```bash
+# Switch to master branch
+git switch master
+
+# Pull latest changes
+git pull
+
+# Merge feature branch
+git merge feature/change-password
+
+# Push merged changes
+git push
+
+# Clean up branches
+git push origin --delete feature/change-password
+git branch -d feature/change-password
+git remote prune origin
+```
+
+---
+
+## Pull Requests
+
+Pull requests enable team discussion before merging branches into master.
+
+### Creating Pull Requests
+
+**From GitHub interface:**
+
+1. **Navigate to repository**: Go to your GitHub repository
+2. **Pull requests tab**: Click "Pull requests"
+3. **New pull request**: Click "New pull request"
+4. **Select branches**: Choose base (master) and compare (feature) branches
+5. **Review changes**: Verify the changes to be merged
+6. **Create PR**: Click "Create pull request"
+
+**From branch page:**
+
+1. **Push branch**: Push your feature branch to GitHub
+2. **Compare button**: Click "Compare & pull request" button
+3. **Fill details**: Add title, description, and reviewers
+4. **Create PR**: Click "Create pull request"
+
+### Pull Request Components
+
+- **Title**: Descriptive name for the changes
+- **Description**: Detailed explanation of changes
+- **Reviewers**: Team members to review the code
+- **Labels**: Categorize the pull request
+- **Assignees**: People responsible for the changes
+- **Milestone**: Link to project milestone
+
+### Review Process
+
+**Adding reviewers:**
+
+1. **Request review**: Click "Reviewers" in the right sidebar
+2. **Select reviewers**: Choose team members to review
+3. **Send notification**: Reviewers receive email notifications
+
+**Reviewing code:**
+
+1. **View changes**: Review the diff of changes
+2. **Add comments**: Comment on specific lines or general feedback
+3. **Submit review**: Choose comment, approve, or request changes
+
+### Merging Pull Requests
+
+**Merge options:**
+
+- **Create merge commit**: Preserves branch history
+- **Squash and merge**: Combines all commits into one
+- **Rebase and merge**: Creates linear history
+
+**Who should merge:**
+
+- **Team policy**: Some teams require different person to merge
+- **Author merge**: Some teams allow PR author to merge
+- **Review approval**: Require approval before merging
+
+---
+
+## Resolving Pull Requests with Conflicts
+
+When pull requests have conflicts, they must be resolved before merging.
+
+### Conflict Detection
+
+GitHub automatically detects conflicts and shows:
+
+- "This branch has conflicts that must be resolved"
+- Cannot automatically merge
+- Options to resolve conflicts
+
+### Resolving Conflicts on GitHub
+
+1. **Resolve conflicts button**: Click "Resolve conflicts"
+2. **Edit files**: Modify conflicted files directly in browser
+3. **Remove markers**: Delete conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+4. **Mark resolved**: Click "Mark as resolved" for each file
+5. **Commit changes**: Commit the resolved conflicts
+
+### Resolving Conflicts Locally
+
+```bash
+# Pull the feature branch locally
+git fetch origin
+git switch feature/login
+
+# Merge master to get conflicts
+git merge master
+
+# Resolve conflicts in your editor
+# Edit conflicted files and remove markers
+
+# Stage resolved files
+git add .
+
+# Commit the merge
+git commit -m "Resolve merge conflicts"
+
+# Push resolved changes
+git push
+```
+
+### Conflict Resolution Best Practices
+
+- **Communicate**: Discuss conflicts with team members
+- **Test thoroughly**: Ensure resolved code works correctly
+- **Document decisions**: Explain why certain changes were chosen
+- **Review carefully**: Double-check conflict resolution
+
+---
+
+## GitHub Issues
+
+GitHub Issues provide a way to track bugs, features, and other project tasks.
+
+### Creating Issues
+
+1. **Issues tab**: Go to "Issues" tab in repository
+2. **New issue**: Click "New issue"
+3. **Fill details**: Add title, description, and metadata
+4. **Submit issue**: Click "Submit new issue"
+
+### Issue Components
+
+- **Title**: Clear, descriptive name
+- **Description**: Detailed explanation of the issue
+- **Assignees**: People responsible for the issue
+- **Labels**: Categorize the issue (bug, enhancement, etc.)
+- **Milestone**: Link to project milestone
+- **Attachments**: Files, screenshots, or other resources
+
+### Issue Templates
+
+Create standardized issue templates in `.github/ISSUE_TEMPLATE/`:
+
+```markdown
+---
+name: Bug Report
+about: Create a report to help us improve
+title: ""
+labels: bug
+assignees: ""
+---
+
+**Describe the bug**
+A clear description of what the bug is.
+
+**Steps to reproduce**
+
+1. Go to '...'
+2. Click on '....'
+3. See error
+
+**Expected behavior**
+What you expected to happen.
+
+**Screenshots**
+If applicable, add screenshots.
+
+**Environment**
+
+- OS: [e.g. macOS]
+- Browser: [e.g. Chrome]
+- Version: [e.g. 1.0.0]
+```
+
+### Issue Management
+
+**Filtering and sorting:**
+
+- **Author**: Filter by issue creator
+- **Labels**: Filter by issue type
+- **Assignees**: Filter by assigned person
+- **Milestones**: Filter by project milestone
+- **Status**: Open or closed issues
+
+**Bulk operations:**
+
+- **Select multiple**: Check multiple issues
+- **Apply labels**: Add labels to multiple issues
+- **Assign users**: Assign multiple issues
+- **Close issues**: Close multiple issues
+
+---
+
+## GitHub Labels
+
+Labels help categorize and organize issues and pull requests.
+
+### Default Labels
+
+GitHub provides default labels for every repository:
+
+- **bug**: Something isn't working
+- **documentation**: Improvements or additions to documentation
+- **duplicate**: This issue or pull request already exists
+- **enhancement**: New feature or request
+- **good first issue**: Good for newcomers
+- **help wanted**: Extra attention is needed
+- **invalid**: Something is wrong
+- **question**: Further information is requested
+- **wontfix**: This will not be worked on
+
+### Creating Custom Labels
+
+1. **Labels page**: Go to "Issues" → "Labels"
+2. **New label**: Click "New label"
+3. **Fill details**: Name, description, and color
+4. **Create label**: Click "Create label"
+
+### Label Management
+
+**Label properties:**
+
+- **Name**: Short, descriptive name
+- **Description**: Explain when to use the label
+- **Color**: Choose distinctive color for visibility
+
+**Label usage:**
+
+- **Apply to issues**: Add labels to categorize issues
+- **Apply to PRs**: Use labels for pull request types
+- **Filter by labels**: Find issues/PRs with specific labels
+- **Label reports**: See count of issues per label
+
+---
+
+## GitHub Milestones
+
+Milestones help track progress on groups of issues and pull requests.
+
+### Creating Milestones
+
+1. **Milestones page**: Go to "Issues" → "Milestones"
+2. **New milestone**: Click "New milestone"
+3. **Fill details**: Title, description, and due date
+4. **Create milestone**: Click "Create milestone"
+
+### Milestone Components
+
+- **Title**: Name of the milestone (e.g., "Version 2.0")
+- **Description**: Detailed explanation of the milestone
+- **Due date**: Target completion date
+- **Progress tracking**: Percentage complete based on closed issues
+
+### Using Milestones
+
+**Adding issues to milestones:**
+
+1. **Select issues**: Check multiple issues
+2. **Apply milestone**: Choose milestone from dropdown
+3. **Bulk assign**: Apply milestone to all selected issues
+
+**Milestone progress:**
+
+- **Open issues**: Number of unresolved issues
+- **Closed issues**: Number of completed issues
+- **Progress bar**: Visual representation of completion
+- **Due date**: Time remaining to complete
+
+### Milestone Management
+
+**Best practices:**
+
+- **Realistic deadlines**: Set achievable due dates
+- **Clear scope**: Define what's included in the milestone
+- **Regular updates**: Update progress regularly
+- **Team communication**: Keep team informed of progress
+
+---
+
+## Contributing to an Open-Source Project
+
+Contributing to open-source projects follows a specific workflow using forks and pull requests.
+
+### Forking a Repository
+
+1. **Navigate to project**: Go to the project repository
+2. **Fork button**: Click "Fork" button in top-right
+3. **Select account**: Choose your GitHub account
+4. **Fork created**: Repository is copied to your account
+
+### Setting Up Your Fork
+
+```bash
+# Clone your forked repository
+git clone https://github.com/your-username/project-name.git
+
+# Add original repository as upstream remote
+git remote add upstream https://github.com/original-owner/project-name.git
+
+# Verify remotes
+git remote -v
+```
+
+### Making Contributions
+
+```bash
+# Create feature branch
+git switch -c bug-fix
+
+# Make changes and commit
+echo "hello" >> README.md
+git add README.md
+git commit -m "update readme"
+
+# Push to your fork
+git push -u origin bug-fix
+```
+
+### Creating Pull Requests
+
+1. **Navigate to fork**: Go to your forked repository
+2. **Compare button**: Click "Compare & pull request"
+3. **Select branches**: Base (original repo master) vs compare (your branch)
+4. **Fill details**: Add title and description
+5. **Create PR**: Submit pull request
+
+### Pull Request Best Practices
+
+- **Clear title**: Descriptive name for the changes
+- **Detailed description**: Explain what and why you changed
+- **Link issues**: Reference related issues using `#issue-number`
+- **Follow guidelines**: Check project's contributing guidelines
+- **Test thoroughly**: Ensure your changes work correctly
+
+---
+
+## Keeping a Fork Up to Date
+
+Forked repositories can become out of sync with the original repository. Regular updates are essential.
+
+### Adding Upstream Remote
+
+```bash
+# Add original repository as upstream remote
+git remote add upstream https://github.com/original-owner/project-name.git
+
+# Verify remotes
+git remote -v
+# origin    https://github.com/your-username/project-name.git (fetch)
+# origin    https://github.com/your-username/project-name.git (push)
+# upstream  https://github.com/original-owner/project-name.git (fetch)
+# upstream  https://github.com/original-owner/project-name.git (push)
+```
+
+### Updating Your Fork
+
+```bash
+# Fetch latest changes from upstream
+git fetch upstream
+
+# Switch to master branch
+git switch master
+
+# Merge upstream changes
+git merge upstream/master
+
+# Push updates to your fork
+git push origin master
+```
+
+### Keeping Feature Branches Updated
+
+```bash
+# Switch to your feature branch
+git switch feature-branch
+
+# Merge latest master into your branch
+git merge master
+
+# Resolve any conflicts if they occur
+# Edit conflicted files and remove markers
+git add .
+git commit -m "Resolve merge conflicts"
+
+# Push updated branch
+git push origin feature-branch
+```
+
+### Automated Updates
+
+**GitHub Actions**: Create workflow to automatically sync fork:
+
+```yaml
+name: Sync Fork
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/fork-sync@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: original-owner
+          repo: project-name
+```
+
+### Best Practices
+
+- **Regular updates**: Sync your fork frequently
+- **Clean history**: Keep your fork's history clean
+- **Separate branches**: Work on features in separate branches
+- **Test after updates**: Ensure everything still works after syncing
+- **Communicate**: Let maintainers know about major changes
