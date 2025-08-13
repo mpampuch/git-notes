@@ -22,7 +22,9 @@ Git settings can be configured at **three levels**:
 - **Global level**: Applies to all repositories for the current user.
 - **Local level**: Applies to the specific repository in the current folder.
 
-![](git-configuration/20250809150037.png)
+<p align="center">
+<img src="git-configuration/20250809150037.png" alt="Git Configuration Setup" style="width:60%;">
+</p>
 
 You can use the `git config` command with different flags to specify the level.
 
@@ -79,7 +81,9 @@ Different operating systems handle end-of-line characters differently:
 - **Windows**: Uses carriage return + line feed (`\r\n`) (`CRLF`)
 - **macOS/Linux**: Use just line feed (`\n`)(`LF`)
 
-![](git-configuration/20250809150118.png)
+<p align="center">
+<img src="git-configuration/20250809150118.png" alt="Git Configuration Levels" style="width:60%;">
+</p>
 
 Misaligned line endings can cause annoying diffs and conflicts. To manage this properly, configure the `core.autocrlf` setting.
 
@@ -103,7 +107,9 @@ git config --global core.autocrlf input
 
 This ensures consistent line endings across platforms and prevents errors in collaboration.
 
-![](git-configuration/20250809150312.png)
+<p align="center">
+<img src="git-configuration/20250809150312.png" alt="Git Configuration Examples" style="width:60%;">
+</p>
 
 ### Summary of Configuration Commands
 
@@ -177,14 +183,18 @@ echo "Hello World" > file1.txt
 echo "Git is awesome" > file2.txt
 ```
 
-![](git-workflow/20250707140822.png)
+<p align="center">
+<img src="git-workflow/20250707140822.png" alt="Git Workflow Overview" style="width:60%;">
+</p>
 
 ```bash
 # Stage the files
 git add file1.txt file2.txt
 ```
 
-![](git-workflow/20250707140856.png)
+<p align="center">
+<img src="git-workflow/20250707140856.png" alt="Working Directory State" style="width:60%;">
+</p>
 
 ```bash
 # Review what's staged
@@ -194,7 +204,9 @@ git status
 git commit -m "Initial commit: Add basic files"
 ```
 
-![](git-workflow/20250707140909.png)
+<p align="center">
+<img src="git-workflow/20250707140909.png" alt="Staging Area State" style="width:60%;">
+</p>
 
 #### Step 3: Make Changes and Commit Again
 
@@ -203,21 +215,27 @@ git commit -m "Initial commit: Add basic files"
 echo "Hello World - Updated" > file1.txt
 ```
 
-![](git-workflow/20250707141016.png)
+<p align="center">
+<img src="git-workflow/20250707141016.png" alt="Repository State After Commit" style="width:60%;">
+</p>
 
 ```bash
 # Stage the changes
 git add file1.txt
 ```
 
-![](git-workflow/20250707141029.png)
+<p align="center">
+<img src="git-workflow/20250707141029.png" alt="Working Directory After Commit" style="width:60%;">
+</p>
 
 ```bash
 # Commit with descriptive message
 git commit -m "Fix typo in file1.txt"
 ```
 
-![](git-workflow/20250707141039.png)
+<p align="center">
+<img src="git-workflow/20250707141039.png" alt="Staging Area After Commit" style="width:60%;">
+</p>
 
 #### Step 4: Delete Files
 
@@ -226,14 +244,18 @@ git commit -m "Fix typo in file1.txt"
 rm file2.txt
 ```
 
-![](git-workflow/20250707141047.png)
+<p align="center">
+<img src="git-workflow/20250707141047.png" alt="Working Directory After File Deletion" style="width:60%;">
+</p>
 
 ```bash
 # Stage the deletion
 git add file2.txt
 ```
 
-![](git-workflow/20250707141059.png)
+<p align="center">
+<img src="git-workflow/20250707141059.png" alt="Staging Area After File Deletion" style="width:60%;">
+</p>
 
 > **💡 Note**: Even though we're using `git add file2.txt` on a deleted file, Git understands this as staging the deletion. The `git add` command stages the current state of the working directory, whether that's adding new files, modifying existing files, or removing files.
 
@@ -242,7 +264,9 @@ git add file2.txt
 git commit -m "Remove unused file2.txt"
 ```
 
-![](git-workflow/20250707141119.png)
+<p align="center">
+<img src="git-workflow/20250707141119.png" alt="Repository After File Deletion Commit" style="width:60%;">
+</p>
 
 ### How Git Stores Data
 
@@ -259,13 +283,17 @@ Each commit contains:
 - A complete snapshot of the project at that point in time
 - References to parent commits
 
-![](git-workflow/20250707141136.png)
+<p align="center">
+<img src="git-workflow/20250707141136.png" alt="Git Data Storage Structure" style="width:60%;">
+</p>
 
 This snapshot-based approach makes Git extremely efficient and reliable for version control.
 
 Even though Git stores the whole content of the project in each snapshot, it doesn't take up too much memory because Git is very efficient. It compresses the data and doesn't store any duplicate content.
 
-![](git-workflow/20250707141203.png)
+<p align="center">
+<img src="git-workflow/20250707141203.png" alt="Git Commit Structure" style="width:60%;">
+</p>
 
 ## Staging Files
 
@@ -322,7 +350,9 @@ Running `git status` now shows:
 - Files in the staging area (green) - ready to commit
 - Modified files in the working directory (red) - not yet staged
 
-![](staging-files/5.36.42.png)
+<p align="center">
+<img src="staging-files/5.36.42.png" alt="Staging Files Process" style="width:60%;">
+</p>
 
 ### Re-staging Modified Files
 
@@ -897,7 +927,9 @@ index abc1234..def5678 100644
 +ocean
 ```
 
-![](viewing-commits/6.01.36.png)
+<p align="center">
+<img src="viewing-commits/6.01.36.png" alt="Viewing Commits Output" style="width:60%;">
+</p>
 
 **Key elements:**
 
@@ -1651,7 +1683,9 @@ git checkout main
 
 When you check out a specific commit (not a branch), Git puts you in what's called a **detached HEAD state**. This is a normal Git concept that many find confusing, but it's actually quite simple.
 
-![](checking-out/20250710172948.png)
+<p align="center">
+<img src="checking-out/20250710172948.png" alt="Checking Out Commits" style="width:60%;">
+</p>
 
 The way git represents branches is using a **pointer**. So `master` is pointing to the last commit we have created so far. So as we create new commits, `master` moves forward to point to the last commit. Now, because we can have multiple branches, git needs to know what is the branch we're currently working on. To do that, it uses another special pointer called `HEAD`. So `HEAD` points to the current branch we're working on, in this case, `master`. You've seen this before. In our log, you can see, `HEAD` is pointing to `master`, and this item is in front of the last commit. So as we create new commits, these two pointers, `HEAD` and `master`, will move forward. Now here's the thing, when we check out a particular commit, the `HEAD` pointer will move to that commit. This is what we call the detached `HEAD`.
 
@@ -1663,11 +1697,15 @@ The way git represents branches is using a **pointer**. So `master` is pointing 
 
 Normal state:
 
-![](checking-out/20250710173152.png)
+<p align="center">
+<img src="checking-out/20250710173152.png" alt="Detached HEAD State" style="width:60%;">
+</p>
 
 Detached HEAD state:
 
-![](checking-out/20250710173212.png)
+<p align="center">
+<img src="checking-out/20250710173212.png" alt="Detached HEAD State Diagram" style="width:60%;">
+</p>
 
 ### Why Detached HEAD Happens
 
@@ -1701,17 +1739,23 @@ git show HEAD
 
 If you create a commit while in detached HEAD state:
 
-![](checking-out/20250710173250.png)
+<p align="center">
+<img src="checking-out/20250710173250.png" alt="Creating Commits in Detached HEAD" style="width:60%;">
+</p>
 
 The new commit becomes what's known as **orphaned**.
 
 This is because eventually you will move the `HEAD` pointer to another branch.
 
-![](checking-out/20250710173303.png)
+<p align="center">
+<img src="checking-out/20250710173303.png" alt="Orphaned Commit" style="width:60%;">
+</p>
 
 At this stage, the new commit is not reachable from any branch. Git's garbage collection will eventually delete orphaned commits to save space.
 
-![](checking-out/20250710173320.png)
+<p align="center">
+<img src="checking-out/20250710173320.png" alt="Recovering Orphaned Commits" style="width:60%;">
+</p>
 
 ### Returning from Detached HEAD State
 
@@ -2209,7 +2253,9 @@ git tag -l --format='%(refname:short) %(committerdate) %(contents:subject)'
 
 **Branching** allows us to diverge from the main line of work and work on something else in isolation. Conceptually, you can think of a branch like a separate isolated workspace.
 
-![](branching/20250715125613.png)
+<p align="center">
+<img src="branching/20250715125613.png" alt="Git Branching Overview" style="width:60%;">
+</p>
 
 The main workspace is called `master` (or `main`), and additional workspaces can be created for working on new features in isolation.
 
@@ -2225,25 +2271,35 @@ Git manages branches differently from many other version control systems like Su
 
 When we create a new branch, Git creates a new pointer that can be moved around. This pointer is just a tiny file that contains a 40-byte commit ID. That's why creating a branch in Git is **blazingly fast**.
 
-![](branching/20250715125737.png)
+<p align="center">
+<img src="branching/20250715125737.png" alt="Creating a New Branch" style="width:60%;">
+</p>
 
 When switching to a branch and making new commits, Git moves this pointer forward while the `master` pointer remains in place. Git tracks the latest code in each branch independently.
 
-![](branching/20250715125827.png)
+<p align="center">
+<img src="branching/20250715125827.png" alt="Switching to New Branch" style="width:60%;">
+</p>
 
 When switching back to `master`, Git takes the snapshot from the commit that `master` points to and resets the working directory to that snapshot, maintaining a **single working directory**.
 
-![](branching/20250715125834.png)
+<p align="center">
+<img src="branching/20250715125834.png" alt="Making Commits on New Branch" style="width:60%;">
+</p>
 
 ### The HEAD Pointer
 
 Git tracks the current branch using a special pointer called **HEAD**. This pointer is another tiny file containing the name of a branch, like `master`.
 
-![](branching/20250715125841.png)
+<p align="center">
+<img src="branching/20250715125841.png" alt="HEAD Pointer Movement" style="width:60%;">
+</p>
 
 When switching to a different branch, Git moves the HEAD pointer and updates the tiny file with the name of the target branch, tracking which branch is currently active.
 
-![](branching/20250715125850.png)
+<p align="center">
+<img src="branching/20250715125850.png" alt="HEAD Pointer Tracking" style="width:60%;">
+</p>
 
 ## Working with Branches
 
@@ -2264,6 +2320,66 @@ The branch information displayed in the terminal comes from zsh with git plugin 
 A common issue is accidentally committing code to the wrong branch. The current branch can be verified using `git status`, which displays "On branch master."
 
 To fix the bug, the current branch must be changed to `bugfix`. There are two ways to do this. Historically, the `checkout` command was used, but it had multiple applications and was confusing. The newer `switch` command is specifically designed for switching branches.
+
+### Git Switch vs Git Checkout
+
+Git introduced `git switch` in version 2.23 to provide a more focused and safer alternative to `git checkout` for branch operations. Here's how they differ:
+
+#### `git switch` (Recommended)
+
+- **Purpose**: Specifically designed for switching between branches
+- **Safety**: Prevents accidental file operations
+- **Clarity**: Clear intent - you're switching branches
+- **Modern**: Introduced in Git 2.23+ as part of the new command set
+
+```bash
+# Switch to an existing branch
+git switch main
+
+# Create and switch to a new branch
+git switch -c feature/new-feature
+
+# Switch to a remote branch (creates local tracking branch)
+git switch -c feature/remote-feature origin/feature/remote-feature
+```
+
+#### `git checkout` (Legacy)
+
+- **Purpose**: Multi-purpose command for switching branches, restoring files, and checking out commits
+- **Confusion**: Can accidentally overwrite files if used incorrectly
+- **Legacy**: Older command with multiple responsibilities
+
+```bash
+# Switch to an existing branch
+git checkout main
+
+# Create and switch to a new branch
+git checkout -b feature/new-feature
+
+# Restore a file to its last committed state
+git checkout -- filename.txt
+
+# Check out a specific commit (detached HEAD)
+git checkout abc123
+```
+
+#### When to Use Each
+
+**Use `git switch` when:**
+
+- Switching between branches
+- Creating new branches
+- Working with remote branches
+
+**Use `git checkout` when:**
+
+- Restoring files to their last committed state
+- Checking out specific commits (detached HEAD)
+- Working with older Git versions (< 2.23)
+
+#### Best Practice
+
+For modern Git workflows, prefer `git switch` for branch operations and `git restore` for file operations. This makes your commands more explicit and reduces the chance of errors.
 
 ```bash
 # Switch to the bugfix branch
@@ -2503,15 +2619,25 @@ When branches have not diverged and there is a direct linear path from the targe
 **Example scenario:**
 
 - Master branch has three commits
-  ![](merging/8.02.57.png)
+  <p align="center"></p>
+<img src="merging/8.02.57.png" alt="Merging Branches Overview" style="width:60%;">
+</p>
 - A new branch called `bugfix` is created, pointing to the same commit as master
-  ![](merging/8.01.58.png)
+  <p align="center"></p>
+<img src="merging/8.01.58.png" alt="Creating Bugfix Branch" style="width:60%;">
+</p>
 - After switching to the bugfix branch and making commits, the changes need to be brought back to master
-  ![](merging/20250715132333.png)
+  <p align="center">
+<img src="merging/20250715132333.png" alt="Bugfix Branch with New Commits" style="width:60%;">
+</p>
 - Since the branches have not diverged, Git simply moves the master pointer forward to point to the same commit as bugfix
-  ![](merging/20250715132343.png)
+  <p align="center">
+<img src="merging/20250715132343.png" alt="Fast-Forward Merge" style="width:60%;">
+</p>
 - Now you can delete the bugfix branch, removing the pointer and now you have a clean linear history
-  ![](merging/20250715132446.png)
+  <p align="center">
+<img src="merging/20250715132446.png" alt="Clean Linear History After Merge" style="width:60%;">
+</p>
 
 **Git implementation:**
 Git performs a fast-forward merge by moving the pointer of the source branch forward. After the merge, the bugfix branch can be removed, which eliminates the pointer.
@@ -2523,16 +2649,22 @@ When branches have diverged, Git cannot perform a fast-forward merge and must cr
 **Example scenario:**
 
 - Bugfix branch is two commits ahead of master
-  ![](merging/20250715132514.png)
+  <p align="center">
+<img src="merging/20250715132514.png" alt="Three-Way Merge Process" style="width:60%;">
+</p>
 - Before merging, an additional commit is made to master
-  ![](merging/20250715132528.png)
+  <p align="center">
+<img src="merging/20250715132528.png" alt="Diverged Branches" style="width:60%;">
+</p>
 - The branches are now **diverged** with changes in master that don't exist in the bugfix branch
   - Git cannot move the master pointer forward to point to the same commit as bugfix without losing the latest commit in master
 
 **Merge commit creation:**
 Git creates a new commit that combines changes from both branches. This is called a three-way merge because the new commit is based on three different commits:
 
-![](merging/20250715132630.png)
+<p align="center">
+<img src="merging/20250715132630.png" alt="Merge Commit Creation" style="width:60%;">
+</p>
 
 1. The common ancestor of both branches (before code)
 2. The tip of the source branch (after code)
@@ -2587,17 +2719,25 @@ Consider a scenario with two branches: `master` and `feature`. The branches have
 
 - Feature branch contains commits `f1` and `f2`
 - Merge commit combines all changes from `f1` and `f2` into a single commit
-  ![](fast-forward-merging/20250717230247.png)
+  <p align="center">
+<img src="fast-forward-merging/20250717230247.png" alt="Fast-Forward Merge Scenario" style="width:60%;">
+</p>
 - To remove the feature, simply revert the merge commit: `git revert <merge-commit-hash>`
 - This creates a new commit that undoes all changes from the feature branch
-  ![](fast-forward-merging/20250717230303.png)
+  <p align="center">
+<img src="fast-forward-merging/20250717230303.png" alt="Feature Reversion with Merge Commit" style="width:60%;">
+</p>
 
 #### With fast-forward merge
 
 - Master pointer moves to point to the feature branch commits
-  ![](fast-forward-merging/20250717230339.png)
+  <p align="center">
+<img src="fast-forward-merging/20250717230339.png" alt="Fast-Forward Merge Approach" style="width:60%;">
+</p>
 - To remove the feature, multiple commits must be reverted (`f1` and `f2` individually)
-  ![](fast-forward-merging/20250717230344.png)
+  <p align="center">
+<img src="fast-forward-merging/20250717230344.png" alt="Feature Reversion with Fast-Forward" style="width:60%;">
+</p>
 - This process is more complex and error-prone
 
 **Comparison with fast-forward:**
@@ -2605,7 +2745,9 @@ Consider a scenario with two branches: `master` and `feature`. The branches have
 - **Fast-forward merge**: Creates linear history but makes feature removal more complex. Multiple revert operations required, increasing complexity
 - **Merge commit**: Preserves branch history and simplifies feature reversion. Single revert operation removes entire feature
 
-![](fast-forward-merging/20250717230226.png)
+<p align="center">
+<img src="fast-forward-merging/20250717230226.png" alt="Conclusion - Merge Commits vs Fast-Forward" style="width:60%;">
+</p>
 
 The choice between approaches depends on team culture and project requirements.
 
@@ -2858,11 +3000,15 @@ git reset --hard <merge-commit-hash>
 
 **Note**: After resetting, the merge commit becomes "orphaned" (no pointers reference it).
 
-![](resetting/20250717232334.png)
+<p align="center">
+<img src="resetting/20250717232334.png" alt="Git Reset Options Overview" style="width:60%;">
+</p>
 
 Git's garbage collector will eventually remove these orphaned commits from the repository.
 
-![](resetting/20250717232353.png)
+<p align="center">
+<img src="resetting/20250717232353.png" alt="Git Reset Options Comparison" style="width:60%;">
+</p>
 However, the commit remains recoverable using its hash until garbage collection occurs.
 
 #### 2. **Revert (Safe for Shared History)**
@@ -2940,11 +3086,15 @@ Instead of creating a merge commit that preserves branch history, squash merging
 
 - Commits `B1` and `B2` were made when fixing a bug.
 
-![](squash-merging/20250717232738.png)
+<p align="center">
+<img src="squash-merging/20250717232738.png" alt="Squash Merging Overview" style="width:60%;">
+</p>
 
 - They were merged into our master branch
 
-![](squash-merging/20250717232743.png)
+<p align="center">
+<img src="squash-merging/20250717232743.png" alt="Squash Merge Result" style="width:60%;">
+</p>
 
 - But `B1` and `B2` are not good commits. They were only made as checkpoints when fixing our bugfix branch. Now the history is polluted with bad quality commits.
 
@@ -2952,19 +3102,27 @@ Instead of creating a merge commit that preserves branch history, squash merging
 
 - Starting from the initial scenario
 
-  ![](squash-merging/20250717232809.png)
+  <p align="center">
+<img src="squash-merging/20250717232809.png" alt="Squash Merge Process" style="width:60%;">
+</p>
 
 - You create a new commit that combines all the changes of the bugfix branch
 
-  ![](squash-merging/20250717232820.png)
+  <p align="center">
+<img src="squash-merging/20250717232820.png" alt="Squash Merge Result" style="width:60%;">
+</p>
 
 - Now you can apply this commit on top of the `master` branch. The key difference between this and a merge commit is that the **the resulting commit doesn't have two parents**, but is instead a regular commit with all the combined changes.
 
-  ![](squash-merging/20250717232826.png)
+  <p align="center">
+<img src="squash-merging/20250717232826.png" alt="Final Squash Merge Result" style="width:60%;">
+</p>
 
 - Now you're done with the bugfix branch, you can delete it and now you're left with a single clean and linear history
 
-  ![](squash-merging/20250717232836.png)
+  <p align="center">
+<img src="squash-merging/20250717232836.png" alt="Clean Linear History After Squash Merge" style="width:60%;">
+</p>
 
 ### Performing a Squash Merge
 
@@ -3138,7 +3296,9 @@ Rebasing is ideal for:
 
 ### ⚠️ Important Warning
 
-![](rebasing/20250717233312.png)
+<p align="center">
+<img src="rebasing/20250717233312.png" alt="Rebasing Overview" style="width:60%;">
+</p>
 
 **Rebasing rewrites history** by creating new commits with the same changes but different commit hashes. This means:
 
@@ -3152,19 +3312,27 @@ Rebasing is ideal for:
 
 1. **Identify the base**: Git finds the common ancestor of your feature branch and the target branch
 
-   ![](rebasing/20250717233119.png)
+   <p align="center">
+<img src="rebasing/20250717233119.png" alt="Rebasing Process" style="width:60%;">
+</p>
 
 2. **Create new commits**: Git creates new commits with the same changes but based on the target branch
 
-   ![](rebasing/20250717233329.png)
+   <p align="center">
+<img src="rebasing/20250717233329.png" alt="Rebasing Result" style="width:60%;">
+</p>
 
 3. **Move the branch pointer**: The feature branch pointer moves to point to the new commits
 
-   ![](rebasing/20250717233336.png)
+   <p align="center">
+<img src="rebasing/20250717233336.png" alt="Final Rebasing Result" style="width:60%;">
+</p>
 
 4. **Clean up old commits**: The original commits become orphaned and will be garbage collected
 
-   ![](rebasing/20250717233304.png)
+   <p align="center">
+<img src="rebasing/20250717233304.png" alt="Linear History After Rebasing" style="width:60%;">
+</p>
 
 Now you have a nice clean linear history.
 
@@ -3429,10 +3597,14 @@ Cherry picking copies a specific commit from one branch and creates a new commit
 **Example scenario:**
 
 - Feature branch has commits `f1` and `f2`
-  ![](cherry-picking/20250717233702.png)
+  <p align="center">
+<img src="cherry-picking/20250717233702.png" alt="Cherry Picking Overview" style="width:60%;">
+</p>
 - You want commit `f1` in master but aren't ready to merge the entire feature branch
 - Cherry pick `f1` to bring only those specific changes to master
-  ![](cherry-picking/20250717233708.png)
+  <p align="center">
+<img src="cherry-picking/20250717233708.png" alt="Cherry Picking Result" style="width:60%;">
+</p>
 
 ### How to Cherry Pick
 
@@ -3600,7 +3772,9 @@ This section covers various tools needed to collaborate with others using Git. W
 
 Version control systems fall into two categories: **centralized** and **distributed**.
 
-![](workflows/20250717234756.png)
+<p align="center">
+<img src="workflows/20250717234756.png" alt="Collaboration Workflows Overview" style="width:60%;">
+</p>
 
 #### Centralized vs Distributed Systems
 
@@ -3626,24 +3800,38 @@ Most private teams and closed-source projects use the **centralized workflow**:
    - Private network server
    - Git hosting services (GitHub, GitLab, Bitbucket)
 
-![](workflows/20250717234806.png)
+<p align="center">
+<img src="workflows/20250717234806.png" alt="Centralized Workflow" style="width:60%;">
+</p>
 
 The benefit of this system is that if something happens to the central repository, work can still get done as team members can share their work with each other.
 
-![](workflows/20250717234815.png)
+<p align="center">
+<img src="workflows/20250717234815.png" alt="Integration Manager Workflow" style="width:60%;">
+</p>
 
 **Example scenario with John and Amy:**
 
 1. Both clone the central repository to their local machines
-   ![](workflows/20250717234828.png)
+   <p align="center">
+<img src="workflows/20250717234828.png" alt="John's Repository" style="width:60%;">
+</p>
 2. John makes commits locally
-   ![](workflows/20250717234832.png)
+   <p align="center">
+<img src="workflows/20250717234832.png" alt="John Makes Commits" style="width:60%;">
+</p>
 3. John pushes his commits to the central repository
-   ![](workflows/20250717234837.png)
+   <p align="center">
+<img src="workflows/20250717234837.png" alt="John Pushes to Central Repository" style="width:60%;">
+</p>
 4. Amy pulls John's work into her local repository
-   ![](workflows/20250717234842.png)
+   <p align="center">
+<img src="workflows/20250717234842.png" alt="Amy Pulls John's Work" style="width:60%;">
+</p>
 5. If conflicts exist, Amy resolves them and pushes her changes
-   ![](workflows/20250717234846.png)
+   <p align="center">
+<img src="workflows/20250717234846.png" alt="Amy Resolves Conflicts and Pushes" style="width:60%;">
+</p>
 
 **Key characteristics:**
 
@@ -3661,24 +3849,40 @@ Open source projects use the **integration manager workflow**:
 4. **Pull requests**: Contributors send pull requests to maintainers
 5. **Review and merge**: Maintainers review and integrate changes
 
-![](workflows/20250717234900.png)
+<p align="center">
+<img src="workflows/20250717234900.png" alt="Integration Manager Workflow Process" style="width:60%;">
+</p>
 
 **Workflow steps:**
 
 1. Fork the project repository (creates a cloud copy)
-   ![](workflows/1.19.19.png)
+   <p align="center">
+<img src="workflows/1.19.19.png" alt="Contributor's Repository" style="width:60%;">
+</p>
 2. Clone the forked repository to your local machine
-   ![](workflows/20250717234916.png)
+   <p align="center">
+<img src="workflows/20250717234916.png" alt="Clone Forked Repository" style="width:60%;">
+</p>
 3. Make commits locally
-   ![](workflows/1.20.43.png)
+   <p align="center">
+<img src="workflows/1.20.43.png" alt="Make Commits Locally" style="width:60%;">
+</p>
 4. Push commits to your forked repository
-   ![](workflows/20250717234942.png)
+   <p align="center">
+<img src="workflows/20250717234942.png" alt="Push to Forked Repository" style="width:60%;">
+</p>
 5. Send a pull request to the project maintainers
-   ![](workflows/20250717234951.png)
+   <p align="center">
+<img src="workflows/20250717234951.png" alt="Send Pull Request" style="width:60%;">
+</p>
 6. Maintainers can then pull the changes and review them
-   ![](workflows/20250717235002.png)
+   <p align="center">
+<img src="workflows/20250717235002.png" alt="Maintainers Pull and Review" style="width:60%;">
+</p>
 7. If they are happy with the changes, they can merge them and push them into the official repository
-   ![](workflows/20250717235007.png)
+   <p align="center">
+<img src="workflows/20250717235007.png" alt="Maintainers Merge and Push to Official Repository" style="width:60%;">
+</p>
 
 **Key characteristics:**
 
@@ -3993,17 +4197,23 @@ git fetch origin master
 
 - **Local repository**: Has commit A, master points to A
 - **Remote repository**: Has commits A and B, master points to B
-  ![](fetching/20250717235615.png)
+  <p align="center">
+<img src="fetching/20250717235615.png" alt="Fetching Overview" style="width:60%;">
+</p>
 - **After fetch**:
 
   - Local repository still has master pointing to A
   - `origin/master` now points to B (showing where remote master is)
   - Working directory still reflects commit A
 
-  ![](fetching/20250717235623.png)
+    <p align="center">
+  <img src="fetching/20250717235623.png" alt="After Fetch - Remote Tracking Branch" style="width:60%;">
+  </p>
 
 - Two get the new changes in your working directory, you have to merge your remote tracking branch into your main branch
-  ![](fetching/20250717235659.png)
+  <p align="center">
+<img src="fetching/20250717235659.png" alt="Merging Remote Tracking Branch" style="width:60%;">
+</p>
 
 ```bash
 # Merge remote changes into your current branch
@@ -4078,7 +4288,9 @@ gh repo view --json recentCommits
 
 Pulling combines fetching and merging to bring remote changes into your current branch.
 
-![](pulling/20250717235920.png)
+<p align="center">
+<img src="pulling/20250717235920.png" alt="Pulling Overview" style="width:60%;">
+</p>
 
 ### Basic Pulling
 
@@ -4103,11 +4315,15 @@ git pull --rebase
 
 Example:
 
-![](pulling/20250718000022.png)
+<p align="center">
+<img src="pulling/20250718000022.png" alt="Pull Process" style="width:60%;">
+</p>
 
 Results in:
 
-![](pulling/20250718000049.png)
+<p align="center">
+<img src="pulling/20250718000049.png" alt="Pull Result" style="width:60%;">
+</p>
 
 Some people don't like the merge pulling because it pollutes the history. Alternatively you can use rebasing here
 
@@ -4119,15 +4335,21 @@ Some people don't like the merge pulling because it pollutes the history. Altern
 
 Example:
 
-![](pulling/20250718000139.png)
+<p align="center">
+<img src="pulling/20250718000139.png" alt="Pull with Rebase" style="width:60%;">
+</p>
 
 Results in:
 
-![](pulling/20250718000151.png)
+<p align="center">
+<img src="pulling/20250718000151.png" alt="Pull with Rebase Result" style="width:60%;">
+</p>
 
 Here git rebases your master branch on top of your origin/master branch. Since the base of the master branch in this scenario is `A`, when you use the `--rebase` option, git changes the base of your origin from A to C. So essentially it's copying your local changes on top of changes made by others. In this case you end up with a simple linear history.
 
-![](pulling/20250718000203.png)
+<p align="center">
+<img src="pulling/20250718000203.png" alt="Linear History After Rebase Pull" style="width:60%;">
+</p>
 
 Which approach is better is subjective and which to use depends on what the team agrees on.
 
@@ -4187,15 +4409,21 @@ git push <remote> <branch>
 
 ### What Push Does
 
-![](pushing/20250718000401.png)
+<p align="center">
+<img src="pushing/20250718000401.png" alt="Pushing Overview" style="width:60%;">
+</p>
 
 1. **Uploads commits**: Sends local commits that don't exist in remote and updates the remote branch pointer by moving it forward
 
-![](pushing/20250718000418.png)
+<p align="center">
+<img src="pushing/20250718000418.png" alt="Push Process" style="width:60%;">
+</p>
 
 3. **Updates remote tracking**: Moves `origin/master` to match remote
 
-![](pushing/20250718000428.png)
+<p align="center">
+<img src="pushing/20250718000428.png" alt="Push Result" style="width:60%;">
+</p>
 
 Note that pushing **Requires authentication**, so your GitHub credentials or SSH keys.
 
@@ -4203,7 +4431,9 @@ Note that pushing **Requires authentication**, so your GitHub credentials or SSH
 
 Push may be rejected if remote has commits you don't have locally:
 
-![](pushing/20250718000558.png)
+<p align="center">
+<img src="pushing/20250718000558.png" alt="Push Rejection Scenario" style="width:60%;">
+</p>
 
 ```bash
 $ git push
@@ -4220,7 +4450,9 @@ hint: (e.g., 'git pull ...') before pushing again.
 
 **Never use `--force` unless absolutely necessary:**
 
-![](pushing/20250718000609.png)
+<p align="center">
+<img src="pushing/20250718000609.png" alt="Push Rejection Error" style="width:60%;">
+</p>
 
 ⚠️ This is essentially telling git to drop someone elses work and replace it with yours.
 
@@ -4238,15 +4470,21 @@ git push
 
 1. Pull the work into your own directory to bring other peoples work into your own repository.
 
-![](pushing/20250718000657.png)
+<p align="center">
+<img src="pushing/20250718000657.png" alt="Force Push Warning" style="width:60%;">
+</p>
 
 2. Then you have to do a merge or a rebase. If there are any conflicts, you have to resolve them.
 
-![](pushing/20250718000705.png)
+<p align="center">
+<img src="pushing/20250718000705.png" alt="Resolving Push Conflicts" style="width:60%;">
+</p>
 
 3. Then you can do a push.
 
-![](pushing/20250718000729.png)
+<p align="center">
+<img src="pushing/20250718000729.png" alt="Successful Push After Resolution" style="width:60%;">
+</p>
 
 The final code and the history of both of these repositories is now identical.
 
@@ -5443,12 +5681,16 @@ Let's examine what happens when you try to rewrite public history through a deta
 **Initial State:**
 Both your local and remote repositories have the same history:
 
-![](rewriting-history/20250809142725.png)
+<p align="center">
+<img src="rewriting-history/20250809142725.png" alt="Initial State - Both repositories in sync" style="width:60%;">
+</p>
 
 **Step 1: Attempting to Modify Commit B**
 When you try to modify commit `B` (which has been pushed), Git creates a new commit `B*` instead of changing the original:
 
-![](rewriting-history/20250809142746.png)
+<p align="center">
+<img src="rewriting-history/20250809142746.png" alt="Step 1 - Git creates new commit B* instead of modifying B" style="width:60%;">
+</p>
 
 **Why this happens:**
 
@@ -5477,7 +5719,9 @@ hint: 'git pull ...') before pushing again.
 
 - Git detects that you're trying to rewrite history
 
-  ![](rewriting-history/20250809142757.png)
+<p align="center">
+<img src="rewriting-history/20250809142757.png" alt="Step 2 - Push rejection due to diverged history" style="width:60%;">
+</p>
 
 - This is the same scenario as when someone else has pushed changes
 
@@ -5485,7 +5729,9 @@ hint: 'git pull ...') before pushing again.
 
 In the case where your push is rejected, first you have to merge the remote branch with the master branch
 
-![](rewriting-history/20250809142819.png)
+<p align="center">
+<img src="rewriting-history/20250809142819.png" alt="Step 3 - Merge approach to resolve divergence" style="width:60%;">
+</p>
 
 If you try to merge origin/master into your local master:
 
@@ -5495,7 +5741,9 @@ git pull origin master
 
 This creates a merge commit and results in:
 
-![](rewriting-history/20250809142826.png)
+<p align="center">
+<img src="rewriting-history/20250809142826.png" alt="Step 3 Result - Noisy history with merge commit" style="width:60%;">
+</p>
 
 **Problems with this approach:**
 
@@ -5509,7 +5757,9 @@ This creates a merge commit and results in:
 
 You could use force push to overwrite the remote history:
 
-![](rewriting-history/20250809142915.png)
+<p align="center">
+<img src="rewriting-history/20250809142915.png" alt="Step 4 - Force push approach" style="width:60%;">
+</p>
 
 ```bash
 git push --force origin master
@@ -5517,7 +5767,9 @@ git push --force origin master
 
 This results in:
 
-![](rewriting-history/20250809142945.png)
+<p align="center">
+<img src="rewriting-history/20250809142945.png" alt="Step 4 Result - Clean linear history after force push" style="width:60%;">
+</p>
 
 This looks great because now we have a simple linear history, but there are a lot of problems with this and you should **never force pushing into a public repository**
 
@@ -5531,14 +5783,20 @@ This looks great because now we have a simple linear history, but there are a lo
 
 Imagine John has the original repository state:
 
-![](rewriting-history/7.19.27.png)
+<p align="center">
+<img src="rewriting-history/7.19.27.png" alt="John's original repository state" style="width:60%;">
+</p>
 
 **After your force push, John's situation:**
 
 1. John adds a new commit `C` on top of `B`
-   ![](rewriting-history/20250809143002.png)
+<p align="center">
+<img src="rewriting-history/20250809143002.png" alt="John adds new commit C on top of B" style="width:60%;">
+</p>
 2. John tries to push: `git push origin master`
-   ![](rewriting-history/20250809143010.png)
+<p align="center">
+<img src="rewriting-history/20250809143010.png" alt="John's push is rejected due to diverged history" style="width:60%;">
+</p>
 3. Push is rejected because John's history diverges from the new remote history
 
 ```bash
@@ -5553,13 +5811,17 @@ John must **pull the new forced commit**
 $ git pull origin master
 ```
 
-![](rewriting-history/20250809143057.png)
+<p align="center">
+<img src="rewriting-history/20250809143057.png" alt="John pulls the new forced commit" style="width:60%;">
+</p>
 
 John then must merge the new commit. **This creates another merge commit and noisy history**.
 
 **Result for John:**
 
-![](rewriting-history/20250809143108.png)
+<p align="center">
+<img src="rewriting-history/20250809143108.png" alt="John's final result with merge commit and noisy history" style="width:60%;">
+</p>
 
 **The cascade effect:**
 
@@ -5624,7 +5886,9 @@ git commit -m "Second part of the change"
 
 Consider a repository with these problematic commit:
 
-![](history/20250809143223.png)
+<p align="center">
+<img src="history/20250809143223.png" alt="Example of Bad History - Problematic commits" style="width:60%;">
+</p>
 
 - "." (mysterious message)
 - "update terms of service and google map SDK" (unrelated changes)
@@ -6270,19 +6534,27 @@ Example:
 
 - If this is your directory structure
 
-![](amending-an-earlier-commit/20250809144446.png)
+<p align="center">
+<img src="amending-an-earlier-commit/20250809144446.png" alt="Original directory structure before amending" style="width:60%;">
+</p>
 
 - and you ammend commit `B` with rebasing
 
-![](amending-an-earlier-commit/20250809144454.png)
+<p align="center">
+<img src="amending-an-earlier-commit/20250809144454.png" alt="Amending commit B with rebasing" style="width:60%;">
+</p>
 
 - Copies of your commits `C` and `D` will be created too.
 
-![](amending-an-earlier-commit/20250809144514.png)
+<p align="center">
+<img src="amending-an-earlier-commit/20250809144514.png" alt="Copies of commits C and D are created" style="width:60%;">
+</p>
 
 - In the end, although it looks similar to your starting history, most of your commits in your linear history will now be new.
 
-![](amending-an-earlier-commit/20250809144523.png)
+<p align="center">
+<img src="amending-an-earlier-commit/20250809144523.png" alt="Final result - Most commits are now new copies" style="width:60%;">
+</p>
 
 ### Best Practices for Interactive Rebase
 
@@ -6326,6 +6598,8 @@ gh repo view --json updatedAt
 
 With the tools described above, its recommended to turn the history from the bad example into something like this:
 
-![](history/20250809145650.png)
+<p align="center">
+<img src="history/20250809145650.png" alt="Example of Good History - Clean and meaningful commits" style="width:60%;">
+</p>
 
 This history is clean and meaningful, and each commit delineates a different, logical unit of work that was performed while working on the project.
